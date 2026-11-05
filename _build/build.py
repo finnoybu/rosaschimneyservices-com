@@ -85,7 +85,7 @@ def header(path):
 def cta_band(title="Ready for a cleaner, safer chimney?", sub="Call or text for an estimate. We answer Monday through Saturday, 7 AM to 7 PM."):
     return f"""<section class="cta-band"><div class="wrap">
   <div><h2>{title}</h2><p>{sub}</p></div>
-  <div class="actions"><a class="btn btn-light" href="tel:{PHONE}">{I['phone']}Call {PHONE_DISPLAY}</a><a class="btn btn-ghost-light" href="contact.html">Request an Estimate</a></div>
+  <div class="actions"><a class="btn btn-light" href="tel:{PHONE}">{I['phone']}Call {PHONE_DISPLAY}</a><a class="btn btn-ghost-light" href="{BOOK}" target="_blank" rel="noopener">{I['calendar']}Book Online</a><a class="btn btn-ghost-light" href="contact.html">Request an Estimate</a></div>
 </div></section>
 """
 
@@ -141,6 +141,7 @@ SCHEMA = {
   "areaServed": [{"@type": "AdministrativeArea", "name": c["name"] + ", VA"} for c in COUNTIES],
   "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "07:00", "closes": "19:00"}],
   "sameAs": [FB, IG, YELP],
+  "potentialAction": {"@type": "ReserveAction", "target": {"@type": "EntryPoint", "urlTemplate": BOOK}, "name": "Book a chimney service visit online"},
   "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Chimney services", "itemListElement": [
     {"@type": "Offer", "itemOffered": {"@type": "Service", "name": n}} for n in
     ["Chimney cleaning and sweeping", "Chimney and fireplace inspection", "Chimney repair", "Chimney liner replacement", "Chimney cap installation and weatherproofing", "Class A chimney, wood stove and pellet stove installation"]]}
@@ -411,10 +412,11 @@ def contact():
              "Caps and Weatherproofing": "Chimney cap or weatherproofing", "Stoves and Full Installations": "Wood or pellet stove installation"}
     options = '<option value="" disabled selected>Choose a service</option>' + "".join(f'<option value="{o}">{o}</option>' for o in opts)
     body = page_hero("Contact", "Get In Touch", "Request an estimate",
-                     "The fastest way to reach us is a call or text. You can also send the form below and we will get back to you.")
+                     "The fastest way to reach us is a call or text. You can also book a visit online, or send the form below and we will get back to you.")
     body += f"""<section class="section"><div class="wrap contact-grid">
   <div class="contact-cards">
     <a class="c-card" href="tel:{PHONE}"><span class="ico">{I['phone']}</span><span><small>Call</small><b>{PHONE_DISPLAY}</b></span></a>
+    <a class="c-card" href="{BOOK}" target="_blank" rel="noopener"><span class="ico">{I['calendar']}</span><span><small>Schedule online</small><b>Book a visit</b></span></a>
     <a class="c-card mobile-only" href="sms:{PHONE}"><span class="ico">{I['sms']}</span><span><small>Text for estimates &amp; pricing</small><b>{PHONE_DISPLAY}</b></span></a>
     <a class="c-card" href="mailto:{EMAIL}"><span class="ico">{I['mail']}</span><span><small>Email</small><b>{EMAIL.replace("@", "@<wbr>")}</b></span></a>
     <div class="c-card" style="align-items:flex-start"><span class="ico">{I['clock']}</span><span style="flex:1"><small>Hours</small>
@@ -552,10 +554,11 @@ def side_card(town_label, county):
     return f"""<aside class="area-side">
   <div class="side-card">
     <b>Get an estimate</b>
-    <p>Call or text for pricing. We answer Monday to Saturday, 7 AM to 7 PM.</p>
+    <p>Call or text for pricing, or book a visit online. We answer Monday to Saturday, 7 AM to 7 PM.</p>
     <a class="btn btn-primary" href="tel:{PHONE}">{I['phone']}{PHONE_DISPLAY}</a>
     <a class="btn btn-ghost mobile-only" href="sms:{PHONE}">{I['sms']}Text Us</a>
-    <a class="btn btn-ghost" href="contact.html?town={q}">Request Online</a>
+    <a class="btn btn-ghost" href="{BOOK}" target="_blank" rel="noopener">{I['calendar']}Book Online</a>
+    <a class="btn btn-ghost" href="contact.html?town={q}">Request an Estimate</a>
   </div>
   <div class="side-card map-mini">{county_map(county)}</div>
 </aside>"""

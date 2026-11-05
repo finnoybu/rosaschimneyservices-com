@@ -423,6 +423,7 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
 .social svg { width: 18px; height: 18px; }
 .foot-contact li { display: flex; gap: 10px; align-items: flex-start; }
 .foot-contact svg { width: 16px; height: 16px; color: var(--ember); flex: none; margin-top: 4px; }
+.foot-contact a[href^="tel:"] { white-space: nowrap; }
 .foot-bottom { margin-top: 56px; border-top: 1px solid var(--line-light); padding: 22px 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,.5); }
 
 /* ---------- Mobile sticky call bar ---------- */
