@@ -1,0 +1,10 @@
+# Used only by Apache hosts (cPanel, GoDaddy, Bluehost, etc.). Safe to ignore elsewhere.
+ErrorDocument 404 /404.html
+DirectoryIndex index.html
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+</IfModule>

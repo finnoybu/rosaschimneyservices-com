@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Rosas Chimney Services">
+  <path d="M33 4c-5 4 3 7-1 12 6-3 1-8 1-12z" fill="#f6c99b" opacity=".9"/>
+  <path d="M27 9c-3 3 2 5-1 8 4-2 1-6 1-8z" fill="#f6c99b" opacity=".55"/>
+  <rect x="18" y="18" width="28" height="5" rx="1" fill="#e07a2e"/>
+  <rect x="21" y="23" width="22" height="31" fill="#9b3a22"/>
+  <g stroke="#2a1a14" stroke-width="1.4" opacity=".55">
+    <path d="M21 31h22M21 39h22M21 47h22"/>
+    <path d="M32 23v8M27 31v8M37 31v8M32 39v8M27 47v7M37 47v7"/>
+  </g>
+  <path d="M4 60L32 44l28 16" fill="none" stroke="#f6c99b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

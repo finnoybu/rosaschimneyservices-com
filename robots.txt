@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rosaschimneyservices.com/sitemap.xml

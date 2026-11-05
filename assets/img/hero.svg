@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Illustration of a brick chimney on a home at dusk with the Blue Ridge Mountains behind">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d1626"/>
+      <stop offset=".45" stop-color="#4a2a33"/>
+      <stop offset=".78" stop-color="#b85a35"/>
+      <stop offset="1" stop-color="#f0a35e"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="1180" cy="640" r="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd59a" stop-opacity=".75"/>
+      <stop offset="1" stop-color="#ffd59a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b201c"/>
+      <stop offset="1" stop-color="#130e0c"/>
+    </linearGradient>
+    <linearGradient id="brickface" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7a2b17"/>
+      <stop offset=".55" stop-color="#a5432a"/>
+      <stop offset="1" stop-color="#6a2412"/>
+    </linearGradient>
+    <pattern id="bricks" width="44" height="22" patternUnits="userSpaceOnUse">
+      <path d="M0 21.5h44M22 0v11M0 11h44M11 11v11M33 11v11" stroke="#3a1810" stroke-width="2" opacity=".55"/>
+    </pattern>
+    <linearGradient id="smk" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#e8d8c8" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#e8d8c8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#sun)"/>
+  <g fill="#fff" opacity=".7">
+    <circle cx="980" cy="70" r="1.6"/><circle cx="1120" cy="130" r="1.2"/><circle cx="1300" cy="60" r="1.8"/>
+    <circle cx="1450" cy="150" r="1.2"/><circle cx="1530" cy="40" r="1.4"/><circle cx="860" cy="150" r="1"/>
+    <circle cx="1240" cy="200" r="1"/><circle cx="1390" cy="250" r="1.1"/><circle cx="700" cy="60" r="1.2"/>
+  </g>
+  <path d="M0 620 C150 560 260 590 380 540 S600 500 720 540 S930 470 1060 520 S1300 460 1440 510 S1560 500 1600 490 V900 H0Z" fill="#6b3a3c" opacity=".55"/>
+  <path d="M0 680 C120 640 240 650 360 610 S560 590 700 620 S900 560 1040 600 S1260 560 1400 590 S1540 580 1600 570 V900 H0Z" fill="#4a2a31" opacity=".8"/>
+  <path d="M0 740 C160 710 300 720 440 690 S700 680 840 700 S1060 650 1220 680 S1480 660 1600 650 V900 H0Z" fill="#2d1c20"/>
+  <g transform="translate(1210 300)">
+    <path d="M60 0c-40 40 30 70-10 120 60-30 0-80 10-120z" fill="url(#smk)"/>
+    <path d="M10 -60c-55 55 50 90-5 160 70-40 10-110 5-160z" fill="url(#smk)" opacity=".7"/>
+    <path d="M95 -40c-30 40 25 60-5 100 45-25 5-65 5-100z" fill="url(#smk)" opacity=".5"/>
+  </g>
+  <path d="M760 900 L1120 600 L1600 760 V900Z" fill="url(#roof)"/>
+  <path d="M760 900 L1120 600 L1600 760" fill="none" stroke="#e07a2e" stroke-width="3" opacity=".35"/>
+  <g fill="#1d1512" opacity=".9">
+    <path d="M820 900l300-250 20 6-300 244z" opacity=".25"/>
+  </g>
+  <g>
+    <rect x="1168" y="440" width="150" height="300" fill="url(#brickface)"/>
+    <rect x="1168" y="440" width="150" height="300" fill="url(#bricks)"/>
+    <rect x="1150" y="418" width="186" height="26" rx="3" fill="#3a2a23"/>
+    <rect x="1150" y="418" width="186" height="6" fill="#5a443a"/>
+    <rect x="1188" y="376" width="20" height="42" fill="#2a1f1b"/>
+    <rect x="1278" y="376" width="20" height="42" fill="#2a1f1b"/>
+    <path d="M1170 380 H1316 L1300 360 H1186Z" fill="#40312a"/>
+    <rect x="1170" y="376" width="146" height="6" fill="#5c4639"/>
+    <rect x="1196" y="390" width="94" height="28" fill="#120c0a" opacity=".85"/>
+    <g stroke="#3d2e27" stroke-width="3"><path d="M1206 390v28M1222 390v28M1238 390v28M1254 390v28M1270 390v28"/></g>
+    <path d="M1168 700 L1318 690 L1318 740 L1168 755Z" fill="#14100e"/>
+    <path d="M1150 720 L1340 690 L1340 712 L1150 744Z" fill="#7a6252" opacity=".9"/>
+  </g>
+
+</svg>

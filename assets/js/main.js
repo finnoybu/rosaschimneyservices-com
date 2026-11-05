@@ -1,0 +1,148 @@
+/* Rosas Chimney Services: small, dependency-free site script */
+(function () {
+  "use strict";
+  var PHONE = "+15404319629";
+  var EMAIL = "rosaschimneyservices@gmail.com";
+
+  // Mobile menu
+  var btn = document.querySelector(".menu-btn");
+  var panel = document.getElementById("mobile-nav");
+  if (btn && panel) {
+    var setOpen = function (open) {
+      panel.classList.toggle("open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      btn.querySelector(".i-open").style.display = open ? "none" : "";
+      btn.querySelector(".i-close").style.display = open ? "" : "none";
+    };
+    btn.addEventListener("click", function () { setOpen(!panel.classList.contains("open")); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
+    window.addEventListener("resize", function () { if (window.innerWidth > 1080) setOpen(false); });
+  }
+
+  // Device-aware call buttons (same approach as the Sturrock's site):
+  // phones dial directly; desktops open a small panel with the number,
+  // a copy button and a link to the online estimate form.
+  var isPhone = function () {
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+  };
+  var modal = null;
+  var buildModal = function () {
+    var contactLink = document.querySelector('.nav a[href$="contact.html"]');
+    var contactHref = contactLink ? contactLink.getAttribute("href") : "contact.html";
+    var d = document.createElement("dialog");
+    d.className = "call-modal";
+    d.setAttribute("aria-labelledby", "cm-title");
+    d.innerHTML =
+      '<div class="cm-top"><small id="cm-title">Call or text Rosas Chimney Services</small>' +
+      '<div class="cm-num">(540) 431-9629</div>' +
+      '<button class="cm-close" type="button" aria-label="Close">&times;</button></div>' +
+      '<div class="cm-body"><p class="cm-status" data-open-status>Mon to Sat, 7 AM to 7 PM</p>' +
+      '<p>Call or text this number from your phone for estimates and pricing, or send us a request online and we will get back to you.</p>' +
+      '<button class="btn btn-primary cm-copy" type="button">Copy Phone Number</button>' +
+      '<a class="btn btn-ghost" href="' + contactHref + '">Request an Estimate Online</a>' +
+      '<div class="cm-copied" role="status" aria-live="polite"></div></div>';
+    document.body.appendChild(d);
+    var close = function () { d.close(); };
+    d.querySelector(".cm-close").addEventListener("click", close);
+    d.addEventListener("click", function (e) { if (e.target === d) close(); });
+    d.querySelector(".cm-copy").addEventListener("click", function () {
+      var out = d.querySelector(".cm-copied");
+      var done = function () { out.textContent = "Copied (540) 431-9629"; };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText("(540) 431-9629").then(done, function () { out.textContent = "Our number is (540) 431-9629"; });
+      } else { out.textContent = "Our number is (540) 431-9629"; }
+    });
+    return d;
+  };
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="tel:"]');
+    if (!a || isPhone()) return;
+    if (typeof HTMLDialogElement === "undefined") return; // very old browsers: leave the tel: link alone
+    e.preventDefault();
+    if (!modal) modal = buildModal();
+    modal.querySelector(".cm-copied").textContent = "";
+    var st = document.querySelector(".utility [data-open-status]");
+    if (st) modal.querySelector(".cm-status").textContent = st.textContent;
+    modal.showModal();
+  });
+
+  // Footer year
+  var y = document.getElementById("year");
+  if (y) y.textContent = new Date().getFullYear();
+
+  // Open now / closed indicator (Mon to Sat, 7 AM to 7 PM, Eastern)
+  var status = document.querySelectorAll("[data-open-status]");
+  if (status.length) {
+    var label = "Mon to Sat, 7 AM to 7 PM";
+    try {
+      var parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short", hour: "numeric", hour12: false }).formatToParts(new Date());
+      var wd = "", hr = 0;
+      parts.forEach(function (p) { if (p.type === "weekday") wd = p.value; if (p.type === "hour") hr = parseInt(p.value, 10) % 24; });
+      var open = wd !== "Sun" && hr >= 7 && hr < 19;
+      label = open ? "Open now until 7 PM" : "Closed now. Text us anytime";
+    } catch (err) { /* keep default label */ }
+    status.forEach(function (el) { el.textContent = label; });
+  }
+
+  // Scroll reveal
+  var els = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && els.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: 0.12 });
+    els.forEach(function (el) { io.observe(el); });
+  } else {
+    els.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  // Estimate request form. No server needed: it opens the visitor's
+  // email app (or text messages) with the request filled in.
+  var form = document.getElementById("estimate-form");
+  if (form) {
+    var msg = document.getElementById("form-msg");
+    var qs = new URLSearchParams(window.location.search);
+    var townParam = qs.get("town");
+    if (townParam) form.querySelector("#city").value = townParam;
+    var preselect = qs.get("service");
+    if (preselect && window.SERVICE_ALIAS && window.SERVICE_ALIAS[preselect]) preselect = window.SERVICE_ALIAS[preselect];
+    if (preselect) {
+      var sel = form.querySelector("#service");
+      Array.prototype.forEach.call(sel.options, function (o) { if (o.value === preselect) sel.value = preselect; });
+    }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var d = new FormData(form);
+      var v = function (k) { return (d.get(k) || "").toString().trim(); };
+      var lines = [
+        "Name: " + v("name"),
+        "Phone: " + v("phone"),
+        v("email") ? "Email: " + v("email") : "",
+        "Service address:",
+        "  " + v("address1"),
+        v("address2") ? "  " + v("address2") : "",
+        "  " + v("city") + ", " + v("state").toUpperCase() + " " + v("zip"),
+        "Service: " + v("service"),
+        "Best way to reach me: " + v("contact"),
+        "",
+        v("message")
+      ];
+      var blank = lines.indexOf("", lines.length - 2);
+      lines = lines.filter(function (l, i) { return l !== "" || i === blank; });
+      var body = lines.join("\n");
+      var subject = "Estimate request: " + v("service") + " (" + v("city") + ", " + v("state").toUpperCase() + ")";
+      var href;
+      if (e.submitter && e.submitter.value === "sms") {
+        var sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? "&" : "?";
+        href = "sms:" + PHONE + sep + "body=" + encodeURIComponent(subject + "\n" + body);
+      } else {
+        href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      }
+      window.location.href = href;
+      msg.className = "form-msg show";
+      msg.textContent = "Your message is ready to send in your email or messaging app. If nothing opened, call or text us at (540) 431-9629.";
+    });
+  }
+})();

@@ -1,0 +1,8 @@
+# Build artifacts and scratch
+dist/
+_build/_to_delete/
+_build/__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+_build/publish-to-github.bat
