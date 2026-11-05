@@ -108,7 +108,7 @@ def footer():
       <li>{I['pin']}<span>Based in Front Royal, serving the Shenandoah Valley, Loudoun &amp; Fauquier</span></li>
     </ul></div>
   </div>
-  <div class="foot-bottom"><span>&copy; <span id="year">2026</span> Rosas Chimney Services LLC. All rights reserved.</span><span>CSIA Certified Chimney Sweep #{CSIA} &middot; Fully Insured</span></div>
+  <div class="foot-bottom"><span>&copy; <span id="year">2026</span> Rosas Chimney Services LLC. All rights reserved.</span><span>Designed and created by <a class="credit" href="https://finnoybu.com" target="_blank" rel="noopener">Ken Tannenbaum</a></span></div>
 </div></footer>
 <div class="call-bar"><a href="tel:{PHONE}">{I['phone']}Call</a><a href="sms:{PHONE}">{I['sms']}Text Us</a></div>
 <script src="assets/js/main.js" defer></script>
