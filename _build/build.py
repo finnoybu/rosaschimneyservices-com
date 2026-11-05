@@ -13,6 +13,8 @@ PHONE_DISPLAY = "(540) 431-9629"
 PHONE = "+15404319629"
 EMAIL = "rosaschimneyservices@gmail.com"
 FB = "https://www.facebook.com/RosasChimneyServicesLLC/"
+IG = "https://www.instagram.com/rosaschimneyservices/"
+BOOK = "https://calendar.app.google/X7SwnxsRZ6jpEQaa7"
 YELP = "https://www.yelp.com/biz/rosas-chimney-services-front-royal"
 CSIA = "11978"
 OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -96,7 +98,7 @@ def footer():
   <div class="foot-grid">
     <div>{BRAND}
       <p class="about-blurb">Family-owned chimney care for Warren County, the northern Shenandoah Valley, Loudoun and Fauquier. CSIA Certified and fully insured.</p>
-      <div class="social"><a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">{I['facebook']}</a><a href="{YELP}" target="_blank" rel="noopener" aria-label="Yelp reviews">{I['review']}</a></div>
+      <div class="social"><a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">{I['facebook']}</a><a href="{IG}" target="_blank" rel="noopener" aria-label="Instagram">{I['instagram']}</a><a href="{YELP}" target="_blank" rel="noopener" aria-label="Yelp reviews">{I['review']}</a></div>
     </div>
     <div><h4>Services</h4><ul>{svc}</ul></div>
     <div><h4>Service Areas</h4><ul>{"".join(f'<li><a href="service-areas/{c["slug"]}/index.html">{c["name"]}</a></li>' for c in COUNTIES)}</ul></div>
@@ -138,7 +140,7 @@ SCHEMA = {
   "@id": SITE + "/#business",
   "areaServed": [{"@type": "AdministrativeArea", "name": c["name"] + ", VA"} for c in COUNTIES],
   "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "07:00", "closes": "19:00"}],
-  "sameAs": [FB, YELP],
+  "sameAs": [FB, IG, YELP],
   "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Chimney services", "itemListElement": [
     {"@type": "Offer", "itemOffered": {"@type": "Service", "name": n}} for n in
     ["Chimney cleaning and sweeping", "Chimney and fireplace inspection", "Chimney repair", "Chimney liner replacement", "Chimney cap installation and weatherproofing", "Class A chimney, wood stove and pellet stove installation"]]}
@@ -238,8 +240,8 @@ def index():
 <section class="section-sm"><div class="wrap">
   <div class="season reveal">
     {I['leaf']}
-    <div><h3>Book before the cold snap</h3><p>Fall is our busiest season. The Chimney Safety Institute of America recommends an inspection every year, so schedule early to get the date you want.</p></div>
-    <a class="btn btn-primary" href="contact.html?service=Chimney%20inspection">Schedule an Inspection</a>
+    <div><h3>Book before the cold snap</h3><p>Fall is our busiest season. The Chimney Safety Institute of America recommends an inspection every year, so schedule early to get the date you want. You can now book your visit online.</p></div>
+    <a class="btn btn-primary" href="{BOOK}" target="_blank" rel="noopener">{I['calendar']}Schedule Online</a>
   </div>
 </div></section>
 
@@ -422,6 +424,7 @@ def contact():
         <tr class="closed"><td>Sunday</td><td>Closed</td></tr>
       </tbody></table></span></div>
     <a class="c-card" href="{FB}" target="_blank" rel="noopener"><span class="ico">{I['facebook']}</span><span><small>Follow us</small><b>Facebook</b></span></a>
+    <a class="c-card" href="{IG}" target="_blank" rel="noopener"><span class="ico">{I['instagram']}</span><span><small>See our work</small><b>Instagram</b></span></a>
   </div>
   <div class="form-card">
     <h2>Tell us about your chimney</h2>
