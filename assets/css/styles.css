@@ -551,3 +551,19 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
   .c-card .ico { width: 42px; height: 42px; }
   .form-row-3 { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---------- Work photos ---------- */
+.work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.work { position: relative; margin: 0; border-radius: var(--radius); overflow: hidden; background: var(--charcoal); box-shadow: var(--shadow-sm); }
+.work img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; transition: transform .5s ease; }
+.work:hover img { transform: scale(1.03); }
+.work figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 36px 16px 14px; color: var(--white); font-size: 14px; font-weight: 600; background: linear-gradient(to top, rgba(20,14,12,.85), rgba(20,14,12,0)); }
+.svc-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; max-width: 560px; }
+.svc-photos.one { grid-template-columns: 1fr; max-width: 280px; }
+@media (max-width: 1080px) { .work-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px) {
+  .work-grid { gap: 12px; }
+  .work figcaption { font-size: 12.5px; padding: 28px 10px 10px; }
+  .svc-photos { gap: 12px; }
+  .svc-photos.one { max-width: none; grid-template-columns: 1fr 1fr; }
+}

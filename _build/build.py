@@ -153,6 +153,19 @@ SERVICES = [
  ("installs", "stove", "Stoves &amp; Full Installations", "Complete installs of Class A metal chimneys and wood or pellet stoves, sized, vented and finished to code."),
 ]
 
+WORK = [
+ ("class-a-chimney-shingle-roof", "Class A chimney installation", "Stainless Class A chimney installed through a shingle roof"),
+ ("wood-stove-installation", "Wood stove installation", "Wood stove and stovepipe installed on a protective hearth pad"),
+ ("creosote-buildup-flue", "Creosote buildup", "Heavy creosote buildup inside a flue before cleaning"),
+ ("class-a-chimney-metal-roof", "Braced Class A chimney", "Class A chimney with support braces on a metal roof"),
+ ("creosote-flue-before-cleaning", "Before the sweep", "Creosote and debris coating a flue before sweeping"),
+ ("class-a-chimney-braced", "Class A chimney installation", "Class A chimney with roof braces on a shingle roof"),
+]
+
+def work_fig(slug, cap, alt, cls="work"):
+    return (f'<figure class="{cls}"><img src="assets/img/work/{slug}.jpg" alt="{alt}" width="900" height="1125" loading="lazy">'
+            f'<figcaption>{cap}</figcaption></figure>')
+
 def index():
     cards = ""
     for i, (a, ic, t, d) in enumerate(SERVICES):
@@ -243,6 +256,15 @@ def index():
 
 <section class="section"><div class="wrap">
   <div class="section-head center reveal">
+    <span class="eyebrow">Recent Work</span>
+    <h2>From our jobs around the valley</h2>
+    <p class="lead">A few recent installs, and what a neglected flue looks like before we sweep it.</p>
+  </div>
+  <div class="work-grid">{"".join(work_fig(*w) for w in WORK)}</div>
+</div></section>
+
+<section class="section bg-cream"><div class="wrap">
+  <div class="section-head center reveal">
     <div class="stars">{stars}</div>
     <span class="eyebrow">Reviews</span>
     <h2>See what your neighbors are saying</h2>
@@ -267,7 +289,8 @@ def services():
 <li>{I['check']}<span>Drop cloths and a HEPA vacuum to keep soot out of your home</span></li>
 <li>{I['check']}<span>Brushing of the flue, smoke chamber, smoke shelf and firebox</span></li>
 <li>{I['check']}<span>Check of the damper, cap and visible components while we are there</span></li>
-<li>{I['check']}<span>A plain-language summary of anything that needs attention</span></li></ul>""",
+<li>{I['check']}<span>A plain-language summary of anything that needs attention</span></li></ul>
+<div class="svc-photos one">{work_fig(*WORK[2], cls="work")}</div>""",
      "inspections": f"""<p>We inspect to the levels defined in NFPA 211, the national standard for chimneys, fireplaces and vents. Most homes need a yearly Level 1, and certain situations call for a deeper look.</p>
 <div class="levels">
 <div class="level"><b>Level 1</b><p>An annual check of the readily accessible parts of the chimney, flue and appliance for a system that has not changed.</p></div>
@@ -295,7 +318,8 @@ def services():
 <li>{I['check']}<span>Class A insulated metal chimney systems</span></li>
 <li>{I['check']}<span>Wood stove installation</span></li>
 <li>{I['check']}<span>Pellet stove installation and venting</span></li>
-<li>{I['check']}<span>Full chimney installations for new or remodeled spaces</span></li></ul>""",
+<li>{I['check']}<span>Full chimney installations for new or remodeled spaces</span></li></ul>
+<div class="svc-photos">{work_fig(*WORK[1])}{work_fig(*WORK[0])}</div>""",
     }
     rows = ""
     for a, ic, t, d in SERVICES:
