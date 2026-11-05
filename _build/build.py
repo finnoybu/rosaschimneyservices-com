@@ -154,12 +154,12 @@ SERVICES = [
 ]
 
 WORK = [
- ("class-a-chimney-shingle-roof", "Class A chimney installation", "Stainless Class A chimney installed through a shingle roof"),
- ("wood-stove-installation", "Wood stove installation", "Wood stove and stovepipe installed on a protective hearth pad"),
- ("creosote-buildup-flue", "Creosote buildup", "Heavy creosote buildup inside a flue before cleaning"),
+ ("class-a-chimney-shingle-roof", "Class A chimney", "Stainless Class A chimney on a shingle roof"),
+ ("wood-stove-installation", "Wood stove", "Wood stove and stovepipe on a protective hearth pad"),
+ ("class-a-chimney-braced", "Class A chimney with braces", "Class A chimney with roof braces on a shingle roof"),
+ ("flue-before-sweep", "Before the sweep", "Flue coated with creosote and debris before sweeping"),
  ("class-a-chimney-metal-roof", "Braced Class A chimney", "Class A chimney with support braces on a metal roof"),
- ("creosote-flue-before-cleaning", "Before the sweep", "Creosote and debris coating a flue before sweeping"),
- ("class-a-chimney-braced", "Class A chimney installation", "Class A chimney with roof braces on a shingle roof"),
+ ("flue-after-sweep", "After the sweep", "The same flue after sweeping, cleared of creosote"),
 ]
 
 def work_fig(slug, cap, alt, cls="work"):
@@ -258,7 +258,7 @@ def index():
   <div class="section-head center reveal">
     <span class="eyebrow">Recent Work</span>
     <h2>From our jobs around the valley</h2>
-    <p class="lead">A few recent installs, and what a neglected flue looks like before we sweep it.</p>
+    <p class="lead">A few recent jobs, and what a neglected flue looks like before we sweep it.</p>
   </div>
   <div class="work-grid">{"".join(work_fig(*w) for w in WORK)}</div>
 </div></section>
@@ -290,7 +290,7 @@ def services():
 <li>{I['check']}<span>Brushing of the flue, smoke chamber, smoke shelf and firebox</span></li>
 <li>{I['check']}<span>Check of the damper, cap and visible components while we are there</span></li>
 <li>{I['check']}<span>A plain-language summary of anything that needs attention</span></li></ul>
-<div class="svc-photos one">{work_fig(*WORK[2], cls="work")}</div>""",
+<div class="svc-photos">{work_fig(*WORK[3])}{work_fig(*WORK[5])}</div>""",
      "inspections": f"""<p>We inspect to the levels defined in NFPA 211, the national standard for chimneys, fireplaces and vents. Most homes need a yearly Level 1, and certain situations call for a deeper look.</p>
 <div class="levels">
 <div class="level"><b>Level 1</b><p>An annual check of the readily accessible parts of the chimney, flue and appliance for a system that has not changed.</p></div>
