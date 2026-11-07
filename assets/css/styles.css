@@ -97,6 +97,9 @@ ul { list-style: none; }
   position: sticky; top: 0; z-index: 50;
   background: linear-gradient(90deg, #1c1613 0%, #3a2a23 50%, #1c1613 100%);
   box-shadow: 0 6px 14px rgba(0,0,0,.25);
+  /* overlap the section below by 1px so a sub-pixel seam never shows the page background
+     (Chrome with Windows display scaling, after scrolling the sticky header) */
+  margin-bottom: -1px;
 }
 .site-header::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 5px; height: 1px;
