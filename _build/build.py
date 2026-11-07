@@ -8,6 +8,7 @@ def _ver(rel):
     return hashlib.sha1(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", rel), "rb").read()).hexdigest()[:8]
 from icons import I
 from areas import COUNTIES, TOWNS
+from extra_pages import rentals, self_check, PROMO, EXTRA_ES
 CBY = {c["slug"]: c for c in COUNTIES}
 
 SITE = "https://rosaschimneyservices.com"
@@ -109,7 +110,7 @@ def footer():
     </div>
     <div><h4>Services</h4><ul>{svc}</ul></div>
     <div><h4>Service Areas</h4><ul>{"".join(f'<li><a href="service-areas/{c["slug"]}/index.html">{c["name"]}</a></li>' for c in COUNTIES)}</ul></div>
-    <div><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="service-areas/index.html">All Service Areas</a></li><li><a href="services.html#faq">FAQ</a></li><li><a href="contact.html">Request an Estimate</a></li></ul></div>
+    <div><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="service-areas/index.html">All Service Areas</a></li><li><a href="services.html#faq">FAQ</a></li><li><a href="chimney-check.html">{PROMO[4]}</a></li><li><a href="vacation-rentals.html">{PROMO[5]}</a></li><li><a href="contact.html">Request an Estimate</a></li></ul></div>
     <div><h4>Contact</h4><ul class="foot-contact">
       <li>{I['phone']}<span><a href="tel:{PHONE}">{PHONE_DISPLAY}</a><small class="fc-note">Call or text</small></span></li>
       <li>{I['mail']}<a href="mailto:{EMAIL}">{EMAIL.replace("@", "@<wbr>")}</a></li>
@@ -250,6 +251,10 @@ def index():
     {I['leaf']}
     <div><h3>Book before the cold snap</h3><p>Fall is our busiest season. The Chimney Safety Institute of America recommends an inspection every year, so schedule early to get the date you want. You can now book your visit online.</p></div>
     <a class="btn btn-primary" href="{BOOK}" target="_blank" rel="noopener">{I['calendar']}Schedule Online</a>
+  </div>
+  <div class="reviews promo">
+    <a class="review-link reveal" href="chimney-check.html"><span class="r-ico">{I['inspect']}</span><span><b>{PROMO[0]}</b><span>{PROMO[1]}</span></span></a>
+    <a class="review-link reveal" href="vacation-rentals.html"><span class="r-ico">{I['home']}</span><span><b>{PROMO[2]}</b><span>{PROMO[3]}</span></span></a>
   </div>
 </div></section>
 
@@ -691,9 +696,14 @@ def write_sitemap(pages):
 pages = {"index.html": index(), "services.html": services(), "about.html": about(),
          "contact.html": contact(), "404.html": notfound()}
 pages.update(area_pages())
+_B = dict(I=I, PHONE=PHONE, PHONE_DISPLAY=PHONE_DISPLAY, BOOK=BOOK, TOWN_BY=TOWN_BY, page_hero=page_hero, cta_band=cta_band,
+          work_fig=work_fig, WORK=WORK, head=head, header=header, footer=footer, json=json)
+pages["vacation-rentals.html"] = rentals(_B)
+pages["chimney-check.html"] = self_check(_B)
 
 # Spanish mirror under /es/ (404 stays English-only; GitHub Pages serves one 404)
-from es_i18n import to_spanish, MISSES
+from es_i18n import to_spanish, MISSES, DICT
+DICT.update(EXTRA_ES)
 def lang_toggle(path, lang):
     en, es = path, "es/" + path
     if lang == "en":

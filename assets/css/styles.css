@@ -611,3 +611,54 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
   .brand-logo { height: 46px; }
   .site-footer .brand-logo { height: 52px; }
 }
+
+/* ---------- Home promo cards ---------- */
+.reviews.promo { margin-top: 24px; max-width: none; }
+
+/* ---------- Chimney self-check ---------- */
+.check-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.check-layout aside { position: sticky; top: 110px; }
+.alert { display: flex; gap: 12px; align-items: flex-start; padding: 16px 18px; background: #fbeae4; border: 1px solid #ebbca9; border-radius: var(--radius); color: var(--brick-dark); margin-bottom: 24px; font-size: 15px; }
+.alert svg { width: 22px; height: 22px; flex: none; color: var(--brick); }
+.check-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 28px 28px; box-shadow: var(--shadow-sm); }
+.chk-group { border: 0; padding: 0; margin: 22px 0 0; min-width: 0; }
+.chk-group legend { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--soot); margin-bottom: 6px; }
+.chk { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; margin-top: 8px; cursor: pointer; font-size: 15.5px; transition: background .15s ease, border-color .15s ease; }
+.chk:hover { background: var(--cream); }
+.chk input { width: 20px; height: 20px; margin: 1px 0 0; flex: none; accent-color: var(--brick); }
+.chk:has(input:checked) { border-color: var(--brick); background: var(--cream); }
+.chk-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+.check-result { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md); border-top: 4px solid var(--line); padding: 28px; outline: none; }
+.check-result.is-urgent { border-top-color: var(--brick); }
+.check-result.is-soon { border-top-color: var(--ember); }
+.check-result.is-plan { border-top-color: #b8902c; }
+.check-result.is-ok { border-top-color: #3f7d4e; }
+.res h3 { font-size: 24px; margin: 10px 0 8px; }
+.res-idle h3 { margin-top: 0; font-size: 21px; }
+.res p { color: var(--stone); }
+.res .hero-actions { margin-top: 20px; }
+.res-tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; background: var(--cream); color: var(--brick-dark); }
+.res-urgent .res-tag { background: var(--brick); color: var(--white); }
+.res-ok .res-tag { background: #e3efe5; color: #2f5f3b; }
+.res-notes { margin-top: 18px; display: grid; gap: 10px; }
+.res-notes:not(:has(li:not([hidden]))) { display: none; }
+.res-notes li { background: var(--cream); padding: 12px 14px; border-radius: 10px; font-size: 14.5px; }
+.res-notes a { color: var(--brick); font-weight: 600; white-space: nowrap; }
+.res-notes a svg { width: 14px; height: 14px; vertical-align: -2px; }
+.note-sm { font-size: 13.5px; color: var(--stone); margin-top: 14px; }
+
+/* ---------- Vacation rentals ---------- */
+.tips-box { background: var(--white); border: 1px solid var(--line); border-left: 5px solid var(--ember); border-radius: var(--radius); padding: 30px 32px; box-shadow: var(--shadow-sm); }
+.tips-box h3 { font-size: 22px; margin-bottom: 14px; }
+.tips-box ol { padding-left: 22px; display: grid; gap: 10px; list-style: decimal; }
+.tips-box li { padding-left: 4px; font-size: 15.5px; }
+.tips-box li::marker { color: var(--brick); font-weight: 700; }
+.faq-tight summary { font-size: 18px; padding: 18px 36px 18px 0; }
+
+@media (max-width: 900px) {
+  .check-layout { grid-template-columns: 1fr; }
+  .check-layout aside { position: static; }
+}
+@media (max-width: 480px) {
+  .check-card, .check-result, .tips-box { padding-left: 18px; padding-right: 18px; }
+}

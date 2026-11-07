@@ -99,12 +99,46 @@
     els.forEach(function (el) { el.classList.add("in"); });
   }
 
+  // Chimney self-check: worst checked item decides the result; situation items add notes.
+  var check = document.getElementById("self-check");
+  if (check) {
+    var box = document.getElementById("check-result");
+    var show = function (scroll) {
+      var picked = Array.prototype.slice.call(check.querySelectorAll('input[name="sign"]:checked'));
+      var kinds = picked.map(function (i) { return i.value; });
+      var res = kinds.indexOf("urgent") > -1 ? "urgent" : kinds.indexOf("soon") > -1 ? "soon" : kinds.indexOf("plan") > -1 ? "plan" : "ok";
+      Array.prototype.forEach.call(box.querySelectorAll("[data-result]"), function (el) { el.hidden = el.getAttribute("data-result") !== res; });
+      var notes = picked.map(function (i) { return i.getAttribute("data-note"); }).filter(Boolean);
+      Array.prototype.forEach.call(box.querySelectorAll("[data-note-for]"), function (el) { el.hidden = notes.indexOf(el.getAttribute("data-note-for")) < 0; });
+      box.className = "check-result is-" + res;
+      var summary = picked.map(function (i) { return i.parentNode.textContent.trim(); }).join("|");
+      Array.prototype.forEach.call(box.querySelectorAll("[data-estimate]"), function (a) {
+        var base = a.getAttribute("href").split("&notes=")[0];
+        a.setAttribute("href", summary ? base + "&notes=" + encodeURIComponent(summary) : base);
+      });
+      if (scroll) {
+        box.focus({ preventScroll: true });
+        if (box.getBoundingClientRect().top < 0 || box.getBoundingClientRect().top > window.innerHeight * 0.6) box.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+    check.addEventListener("submit", function (e) { e.preventDefault(); show(true); });
+    check.addEventListener("reset", function () {
+      setTimeout(function () {
+        Array.prototype.forEach.call(box.querySelectorAll("[data-result]"), function (el) { el.hidden = el.getAttribute("data-result") !== "idle"; });
+        Array.prototype.forEach.call(box.querySelectorAll("[data-note-for]"), function (el) { el.hidden = true; });
+        box.className = "check-result";
+      }, 0);
+    });
+  }
+
   // Estimate request form. No server needed: it opens the visitor's
   // email app (or text messages) with the request filled in.
   var form = document.getElementById("estimate-form");
   if (form) {
     var msg = document.getElementById("form-msg");
     var qs = new URLSearchParams(window.location.search);
+    var notesParam = qs.get("notes");
+    if (notesParam && !form.querySelector("#message").value) form.querySelector("#message").value = T("From the chimney self-check:", "De la autoevaluación de chimenea:") + "\n- " + notesParam.split("|").join("\n- ");
     var townParam = qs.get("town");
     if (townParam) form.querySelector("#city").value = townParam;
     var preselect = qs.get("service");
