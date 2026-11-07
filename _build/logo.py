@@ -137,19 +137,39 @@ def icon():
     o = [f'<path d="{SHIELD}" fill="#FFFFFF" stroke="{NAVY}" stroke-width="12" stroke-linejoin="round"/>', em]
     return svg(600, 770, "".join(o), "Rosas Chimney Services icon")
 
-def horizontal():
+def ink_x(txt, size, tracking=0):
+    """Left and right ink edges of a string, relative to its starting pen position."""
+    s = size / UPM; x = 0; lo, hi = None, None
+    for c in txt:
+        g = CMAP[ord(c)]; bp = BoundsPen(GS); GS[g].draw(bp)
+        if bp.bounds:
+            l, _, r, _ = bp.bounds
+            lo = x + l * s if lo is None else min(lo, x + l * s)
+            hi = x + r * s if hi is None else max(hi, x + r * s)
+        x += GS[g].width * s + tracking
+    return lo, hi
+
+def horizontal(name_fill=None, sub_fill=None, rule_fill=None):
+    """Emblem plus ROSAS / rule / CHIMNEY SERVICES, all three exactly the same width."""
     em, bottom = emblem(185, 48)
     o = [f'<g>{em}</g>']
-    x0 = 395
-    o.append(text_path("ROSAS", 150, x0, 165, tracking=5, anchor="start"))
-    o.append(f'<rect x="{x0+4}" y="190" width="{text_width("ROSAS",150,5)-6:.1f}" height="5" fill="{RULE}"/>')
-    o.append(text_path("CHIMNEY SERVICES", 47, x0 + 4, 252, tracking=5.2, fill=GOLD_TXT, anchor="start"))
-    w = x0 + max(text_width("ROSAS", 150, 5), text_width("CHIMNEY SERVICES", 47, 5.2)) + 20
-    return svg(int(w), 300, "".join(o), "Rosas Chimney Services")
+    left = 395                                   # shared left ink edge
+    nl, nr = ink_x("ROSAS", 150, 5)
+    width = nr - nl                              # the target width for all three
+    o.append(text_path("ROSAS", 150, left - nl, 165, tracking=5, anchor="start", fill=name_fill or NAVY))
+    o.append(f'<rect x="{left:.2f}" y="190" width="{width:.2f}" height="5" fill="{rule_fill or RULE}"/>')
+    sub = "CHIMNEY SERVICES"
+    sl0, sr0 = ink_x(sub, 47, 0)
+    t = (width - (sr0 - sl0)) / (len(sub) - 1)   # tracking that makes the ink width match
+    sl, sr = ink_x(sub, 47, t)
+    o.append(text_path(sub, 47, left - sl, 252, tracking=t, fill=sub_fill or GOLD_TXT, anchor="start"))
+    print(f"  widths  ROSAS {width:.2f}  rule {width:.2f}  CHIMNEY SERVICES {sr - sl:.2f}  (tracking {t:.2f})")
+    return svg(int(left + width + 20), 300, "".join(o), "Rosas Chimney Services")
 
-os.makedirs(OUT, exist_ok=True)
-files = {"rosas-logo-primary.svg": primary(True), "rosas-logo-primary-no-llc.svg": primary(False),
-         "rosas-logo-horizontal.svg": horizontal(), "rosas-logo-icon.svg": icon()}
-for n, c in files.items():
-    open(os.path.join(OUT, n), "w").write(c)
-    print(n, len(c))
+if __name__ == "__main__":
+  os.makedirs(OUT, exist_ok=True)
+  files = {"rosas-logo-primary.svg": primary(True), "rosas-logo-primary-no-llc.svg": primary(False),
+           "rosas-logo-horizontal.svg": horizontal(), "rosas-logo-icon.svg": icon()}
+  for n, c in files.items():
+      open(os.path.join(OUT, n), "w").write(c)
+      print(n, len(c))

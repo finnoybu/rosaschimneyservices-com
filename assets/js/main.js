@@ -3,6 +3,8 @@
   "use strict";
   var PHONE = "+15404319629";
   var EMAIL = "rosaschimneyservices@gmail.com";
+  var ES = document.documentElement.lang === "es";
+  var T = function (en, es) { return ES ? es : en; };
 
   // Mobile menu
   var btn = document.querySelector(".menu-btn");
@@ -11,7 +13,7 @@
     var setOpen = function (open) {
       panel.classList.toggle("open", open);
       btn.setAttribute("aria-expanded", open ? "true" : "false");
-      btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      btn.setAttribute("aria-label", open ? T("Close menu", "Cerrar menú") : T("Open menu", "Abrir menú"));
       btn.querySelector(".i-open").style.display = open ? "none" : "";
       btn.querySelector(".i-close").style.display = open ? "" : "none";
     };
@@ -35,13 +37,13 @@
     d.className = "call-modal";
     d.setAttribute("aria-labelledby", "cm-title");
     d.innerHTML =
-      '<div class="cm-top"><small id="cm-title">Call or text Rosas Chimney Services</small>' +
+      '<div class="cm-top"><small id="cm-title">' + T("Call or text Rosas Chimney Services", "Llame o escriba a Rosas Chimney Services") + '</small>' +
       '<div class="cm-num">(540) 431-9629</div>' +
-      '<button class="cm-close" type="button" aria-label="Close">&times;</button></div>' +
-      '<div class="cm-body"><p class="cm-status" data-open-status>Mon to Sat, 7 AM to 7 PM</p>' +
-      '<p>Call or text this number from your phone for estimates and pricing, or send us a request online and we will get back to you.</p>' +
-      '<button class="btn btn-primary cm-copy" type="button">Copy Phone Number</button>' +
-      '<a class="btn btn-ghost" href="' + contactHref + '">Request an Estimate Online</a>' +
+      '<button class="cm-close" type="button" aria-label="' + T("Close", "Cerrar") + '">&times;</button></div>' +
+      '<div class="cm-body"><p class="cm-status" data-open-status>' + T("Mon to Sat, 7 AM to 7 PM", "Lun. a sáb., 7 AM a 7 PM") + '</p>' +
+      '<p>' + T("Call or text this number from your phone for estimates and pricing, or send us a request online and we will get back to you.", "Llame o envíe un mensaje a este número desde su teléfono para presupuestos y precios, o envíenos una solicitud en línea y le responderemos.") + '</p>' +
+      '<button class="btn btn-primary cm-copy" type="button">' + T("Copy Phone Number", "Copiar número") + '</button>' +
+      '<a class="btn btn-ghost" href="' + contactHref + '">' + T("Request an Estimate Online", "Solicitar un presupuesto en línea") + '</a>' +
       '<div class="cm-copied" role="status" aria-live="polite"></div></div>';
     document.body.appendChild(d);
     var close = function () { d.close(); };
@@ -49,10 +51,10 @@
     d.addEventListener("click", function (e) { if (e.target === d) close(); });
     d.querySelector(".cm-copy").addEventListener("click", function () {
       var out = d.querySelector(".cm-copied");
-      var done = function () { out.textContent = "Copied (540) 431-9629"; };
+      var done = function () { out.textContent = T("Copied (540) 431-9629", "Copiado: (540) 431-9629"); };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText("(540) 431-9629").then(done, function () { out.textContent = "Our number is (540) 431-9629"; });
-      } else { out.textContent = "Our number is (540) 431-9629"; }
+        navigator.clipboard.writeText("(540) 431-9629").then(done, function () { out.textContent = T("Our number is (540) 431-9629", "Nuestro número es (540) 431-9629"); });
+      } else { out.textContent = T("Our number is (540) 431-9629", "Nuestro número es (540) 431-9629"); }
     });
     return d;
   };
@@ -75,13 +77,13 @@
   // Open now / closed indicator (Mon to Sat, 7 AM to 7 PM, Eastern)
   var status = document.querySelectorAll("[data-open-status]");
   if (status.length) {
-    var label = "Mon to Sat, 7 AM to 7 PM";
+    var label = T("Mon to Sat, 7 AM to 7 PM", "Lun. a sáb., 7 AM a 7 PM");
     try {
       var parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short", hour: "numeric", hour12: false }).formatToParts(new Date());
       var wd = "", hr = 0;
       parts.forEach(function (p) { if (p.type === "weekday") wd = p.value; if (p.type === "hour") hr = parseInt(p.value, 10) % 24; });
       var open = wd !== "Sun" && hr >= 7 && hr < 19;
-      label = open ? "Open now until 7 PM" : "Closed now. Text us anytime";
+      label = open ? T("Open now until 7 PM", "Abierto ahora hasta las 7 PM") : T("Closed now. Text us anytime", "Cerrado ahora. Escríbanos cuando quiera");
     } catch (err) { /* keep default label */ }
     status.forEach(function (el) { el.textContent = label; });
   }
@@ -142,10 +144,13 @@
         "Service: " + v("service"),
         "Best way to reach me: " + v("contact"),
         "",
-        v("message")
-      ];
-      var blank = lines.indexOf("", lines.length - 2);
-      lines = lines.filter(function (l, i) { return l !== "" || i === blank; });
+        v("message"),
+        ES ? "" : null,
+        ES ? "Preferred language: Spanish (sent from the Spanish site)" : null
+      ].filter(function (l) { return l !== null; });
+      var keep = [];
+      lines.forEach(function (l, i) { if (l !== "" || (i > 0 && lines[i - 1] !== "" && i < lines.length - 1)) keep.push(l); });
+      lines = keep;
       var body = lines.join("\n");
       var subject = "Estimate request: " + v("service") + " (" + v("city") + ", " + v("state").toUpperCase() + ")";
       var href;
@@ -157,7 +162,7 @@
       }
       window.location.href = href;
       msg.className = "form-msg show";
-      msg.textContent = "Your message is ready to send in your email or messaging app. If nothing opened, call or text us at (540) 431-9629.";
+      msg.textContent = T("Your message is ready to send in your email or messaging app. If nothing opened, call or text us at (540) 431-9629.", "Su mensaje está listo para enviar en su aplicación de correo o de mensajes. Si no se abrió nada, llámenos o escríbanos al (540) 431-9629.");
     });
   }
 })();

@@ -26,8 +26,7 @@ NAV = [("index.html", "Home"), ("services.html", "Services"), ("about.html", "Ab
        ("service-areas/index.html", "Service Areas"), ("contact.html", "Contact")]
 
 BRAND = ('<a class="brand" href="index.html" aria-label="%s home">'
-         '<img class="mark" src="assets/img/mark.svg" alt="" width="46" height="46">'
-         '<span class="name"><b>Rosas</b><small>Chimney Services</small></span></a>') % NAME
+         '<img class="brand-logo" src="assets/img/logo-horizontal-light.svg?v=%s" alt="Rosas Chimney Services" width="162" height="50"></a>') % (NAME, _ver("assets/img/logo-horizontal-light.svg"))
 
 def head(title, desc, path, extra=""):
     clean = path[:-len("index.html")] if path.endswith("index.html") else path
@@ -40,16 +39,20 @@ def head(title, desc, path, extra=""):
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canon}">
+<!--HREFLANG-->
 <meta name="theme-color" content="#1c1613">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="{NAME}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canon}">
 <meta property="og:image" content="{SITE}/assets/img/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="icon" href="favicon.ico?v={_ver("favicon.ico")}" sizes="any">
+<link rel="icon" href="assets/img/favicon.svg?v={_ver("assets/img/favicon.svg")}" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png?v={_ver("assets/img/favicon-32.png")}" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v={_ver("assets/img/apple-touch-icon.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
@@ -66,7 +69,7 @@ def header(path):
     links = "".join(f'<a href="{h}"{cur if is_cur(h) else ""}>{t}</a>' for h, t in NAV)
     return f"""<div class="utility"><div class="wrap">
   <div class="u-left"><span>{I['clock']}<span data-open-status>Mon to Sat, 7 AM to 7 PM</span></span><span>{I['award']}CSIA Certified Sweep #{CSIA}</span></div>
-  <div class="u-right"><a href="mailto:{EMAIL}">{EMAIL}</a></div>
+  <div class="u-right"><!--LANG--><a class="u-email" href="mailto:{EMAIL}">{EMAIL}</a></div>
 </div></div>
 <header class="site-header"><div class="wrap">
   {BRAND}
@@ -102,15 +105,16 @@ def footer():
     <div>{BRAND}
       <p class="about-blurb">Family-owned chimney care for Warren County, the northern Shenandoah Valley, Loudoun and Fauquier. CSIA Certified and fully insured.</p>
       <div class="social"><a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">{I['facebook']}</a><a href="{IG}" target="_blank" rel="noopener" aria-label="Instagram">{I['instagram']}</a><a href="{YELP}" target="_blank" rel="noopener" aria-label="Yelp reviews">{I['review']}</a></div>
+      <div class="foot-seal"><img src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="64" height="64" loading="lazy"><span>CSIA Certified<br>Sweep #{CSIA}</span></div>
     </div>
     <div><h4>Services</h4><ul>{svc}</ul></div>
     <div><h4>Service Areas</h4><ul>{"".join(f'<li><a href="service-areas/{c["slug"]}/index.html">{c["name"]}</a></li>' for c in COUNTIES)}</ul></div>
     <div><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="service-areas/index.html">All Service Areas</a></li><li><a href="services.html#faq">FAQ</a></li><li><a href="contact.html">Request an Estimate</a></li></ul></div>
     <div><h4>Contact</h4><ul class="foot-contact">
-      <li>{I['phone']}<a href="tel:{PHONE}">{PHONE_DISPLAY}</a> (call or text)</li>
+      <li>{I['phone']}<span><a href="tel:{PHONE}">{PHONE_DISPLAY}</a><small class="fc-note">Call or text</small></span></li>
       <li>{I['mail']}<a href="mailto:{EMAIL}">{EMAIL.replace("@", "@<wbr>")}</a></li>
       <li>{I['clock']}<span>Mon to Sat, 7 AM to 7 PM<br>Closed Sunday</span></li>
-      <li>{I['pin']}<span>Based in Front Royal, serving the Shenandoah Valley, Loudoun &amp; Fauquier</span></li>
+      <li>{I['pin']}<span>Based in Front Royal, VA<small class="fc-note">Serving nine counties</small></span></li>
     </ul></div>
   </div>
   <div class="foot-bottom"><span>&copy; <span id="year">2026</span> Rosas Chimney Services LLC. All rights reserved.</span><span>Designed and created by <a class="credit" href="https://finnoybu.com" target="_blank" rel="noopener">Ken Tannenbaum</a></span></div>
@@ -224,7 +228,7 @@ def index():
   </div>
   <div class="art-card reveal">
     <img src="assets/img/handshake.jpg" alt="Close-up of a friendly handshake" width="1000" height="800" loading="lazy">
-    <div class="badge-float"><b>Sweep #{CSIA}</b><span>CSIA Certified &amp; insured</span></div>
+    <div class="badge-float"><img class="seal" src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="56" height="56" loading="lazy"><div><b>Sweep #{CSIA}</b><span>CSIA Certified &amp; insured</span></div></div>
   </div>
 </div></section>
 
@@ -370,7 +374,7 @@ def about():
     <p>Rosas Chimney Services was started with a simple idea: homeowners deserve a chimney company that shows up when it says it will, explains things clearly and leaves the house cleaner than it found it.</p>
     <p>As a small, local business, every job carries our name. That is why we take the time to do it right, from a routine sweep to a full stove and chimney installation.</p>
     <div class="tags"><span>Family-owned</span><span>Latino-owned</span><span>Women-owned</span><span>Small business</span></div>
-    <div class="cred">{I['award']}<div><b>CSIA Certified Chimney Sweep #{CSIA}</b><span>Certified by the Chimney Safety Institute of America and fully insured.</span></div></div>
+    <div class="cred"><img class="seal" src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="88" height="88" loading="lazy"><div><b>CSIA Certified Chimney Sweep #{CSIA}</b><span>Certified by the Chimney Safety Institute of America and fully insured.</span></div></div>
   </div>
   <div class="art-card photo reveal"><img src="assets/img/mark-and-peyton.jpg" alt="Mark and Peyton of Rosas Chimney Services, smiling outdoors in the Shenandoah Valley" width="1080" height="1350" loading="lazy"></div>
 </div></section>
@@ -678,7 +682,8 @@ def write_sitemap(pages):
     for p in pages:
         if p == "404.html":
             continue
-        x += f'  <url><loc>{clean_url(p)}</loc><lastmod>2026-11-04</lastmod><priority>{pri(p)}</priority></url>\n'
+        for u in (clean_url(p), clean_url("es/" + p)):
+            x += f'  <url><loc>{u}</loc><lastmod>2026-11-07</lastmod><priority>{pri(p)}</priority></url>\n'
     open(os.path.join(OUT, "sitemap.xml"), "w").write(x + "</urlset>\n")
     open(os.path.join(OUT, "assets/img/area-map.svg"), "w").write(
         county_map(None, link=False).replace('<svg class="cmap"', '<svg xmlns="http://www.w3.org/2000/svg"'))
@@ -686,11 +691,47 @@ def write_sitemap(pages):
 pages = {"index.html": index(), "services.html": services(), "about.html": about(),
          "contact.html": contact(), "404.html": notfound()}
 pages.update(area_pages())
+
+# Spanish mirror under /es/ (404 stays English-only; GitHub Pages serves one 404)
+from es_i18n import to_spanish, MISSES
+def lang_toggle(path, lang):
+    en, es = path, "es/" + path
+    if lang == "en":
+        return f'<div class="lang" role="group" aria-label="Language"><span aria-current="true" lang="en">EN</span><a href="{es}" hreflang="es" lang="es" title="Ver en español">ES</a></div>'
+    return f'<div class="lang" role="group" aria-label="Idioma"><a href="{en}" hreflang="en" lang="en" title="View in English">EN</a><span aria-current="true" lang="es">ES</span></div>'
+def hreflang(path):
+    return (f'<link rel="alternate" hreflang="en" href="{clean_url(path)}">\n'
+            f'<link rel="alternate" hreflang="es" href="{clean_url("es/" + path)}">\n'
+            f'<link rel="alternate" hreflang="x-default" href="{clean_url(path)}">')
+es_pages = {}
+for name, html in list(pages.items()):
+    if name == "404.html":
+        pages[name] = html.replace("<!--HREFLANG-->\n", "").replace("<!--LANG-->", "")
+        continue
+    alt = hreflang(name)
+    en_html = html.replace("<!--HREFLANG-->", alt).replace("<!--LANG-->", lang_toggle(name, "en"))
+    es_html = to_spanish(html.replace("<!--HREFLANG-->", alt), SITE)
+    es_html = es_html.replace('content="en_US"', 'content="es_US"')
+    canon = clean_url(name)
+    es_html = es_html.replace(f'<link rel="canonical" href="{canon}">', f'<link rel="canonical" href="{clean_url("es/" + name)}">')
+    es_html = es_html.replace(f'<meta property="og:url" content="{canon}">', f'<meta property="og:url" content="{clean_url("es/" + name)}">')
+    es_html = es_html.replace("<!--LANG-->", lang_toggle(name, "es"))
+    pages[name] = en_html
+    es_pages["es/" + name] = es_html
+if MISSES:
+    print("UNTRANSLATED:", sorted(MISSES))
 for name, html in pages.items():
     depth = name.count("/")
     full = os.path.join(OUT, name)
     os.makedirs(os.path.dirname(full), exist_ok=True)
     with open(full, "w", encoding="utf-8") as f:
         f.write(relink(html, depth))
+for name, html in es_pages.items():
+    depth = name.count("/")
+    full = os.path.join(OUT, name)
+    os.makedirs(os.path.dirname(full), exist_ok=True)
+    out_html = relink(html, depth).replace('="' + "../" * depth + "es/", '="' + "../" * (depth - 1))
+    with open(full, "w", encoding="utf-8") as f:
+        f.write(out_html)
 write_sitemap(pages)
-print("built", len(pages), "pages")
+print("built", len(pages), "English and", len(es_pages), "Spanish pages")
