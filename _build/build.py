@@ -2,7 +2,10 @@
 Run from this folder: python3 build.py  (writes the .html files one level up).
 The finished site needs no build step; this only keeps header/footer in sync."""
 import json, os
-import re
+import re, hashlib
+def _ver(rel):
+    """Short content hash so browsers fetch new CSS/JS whenever it changes."""
+    return hashlib.sha1(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", rel), "rb").read()).hexdigest()[:8]
 from icons import I
 from areas import COUNTIES, TOWNS
 CBY = {c["slug"]: c for c in COUNTIES}
@@ -50,7 +53,7 @@ def head(title, desc, path, extra=""):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/styles.css?v={_ver("assets/css/styles.css")}">
 {extra}</head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -113,7 +116,7 @@ def footer():
   <div class="foot-bottom"><span>&copy; <span id="year">2026</span> Rosas Chimney Services LLC. All rights reserved.</span><span>Designed and created by <a class="credit" href="https://finnoybu.com" target="_blank" rel="noopener">Ken Tannenbaum</a></span></div>
 </div></footer>
 <div class="call-bar"><a href="tel:{PHONE}">{I['phone']}Call</a><a href="sms:{PHONE}">{I['sms']}Text Us</a></div>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/main.js?v={_ver("assets/js/main.js")}" defer></script>
 </body>
 </html>
 """
@@ -477,20 +480,15 @@ def notfound():
     return head("Page Not Found | Rosas Chimney Services", "This page could not be found.", "404.html") + header("") + body + footer()
 
 # ---------------- Service-area pages (inserted into build.py) ----------------
-POLY = {
- "frederick-county": "286,47 423,104 401,229 366,297 291,314 190,257 225,144",
- "clarke-county": "423,104 511,132 511,246 454,303 366,297 401,229",
- "warren-county": "366,297 454,303 436,399 374,439 304,394 291,314",
- "shenandoah-county": "291,314 190,257 53,445 128,541 163,530 304,394",
- "page-county": "304,394 163,530 207,638 278,598 330,530 374,439",
- "rappahannock-county": "374,439 436,399 467,473 436,541 357,587 278,598 330,530",
- "culpeper-county": "357,587 436,541 546,553 599,598 533,695 436,712 392,666",
- "loudoun-county": "511,132 559,132 674,189 731,280 691,348 643,399 546,359 454,303 511,246",
- "fauquier-county": "454,303 546,359 603,382 612,541 599,598 546,553 436,541 467,473 436,399",
-}
-LBL = {"frederick-county": (290, 172, 19), "clarke-county": (462, 182, 19), "warren-county": (378, 332, 18),
-       "shenandoah-county": (160, 457, 19), "page-county": (245, 582, 19), "rappahannock-county": (394, 527, 14),
-       "culpeper-county": (495, 652, 19), "loudoun-county": (600, 277, 19), "fauquier-county": (530, 467, 19)}
+# Real county outlines (U.S. Census 1:500k cartographic boundaries, simplified).
+# Winchester city is drawn as part of Frederick County.
+_CMAP = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "county_paths.json")))
+PATHS = _CMAP["paths"]
+FRX, FRY = _CMAP["front_royal"]
+# label x, y, font size (adjusted from centroids where needed for fit)
+LBL = {"frederick-county": (318, 190, 18), "clarke-county": (437, 250, 15), "warren-county": (355, 352, 15),
+       "shenandoah-county": (192, 386, 18), "page-county": (230, 512, 18), "rappahannock-county": (372, 478, 13),
+       "culpeper-county": (458, 588, 18), "loudoun-county": (588, 262, 18), "fauquier-county": (515, 452, 18)}
 
 def county_map(highlight, link=True):
     """Inline SVG map of the nine counties. highlight=None marks Warren as home base."""
@@ -499,8 +497,8 @@ def county_map(highlight, link=True):
            + ", ".join(c["name"] for c in COUNTIES) + ', Virginia">']
     for c in COUNTIES:
         sl = c["slug"]; on = sl == hi
-        poly = (f'<polygon points="{POLY[sl]}" fill="{"#9b3a22" if on else "#f6c99b"}" fill-opacity="{0.9 if on else 0.55}" '
-                f'stroke="{"#7a2b17" if on else "#b4512b"}" stroke-width="2" stroke-linejoin="round"/>')
+        poly = (f'<path d="{PATHS[sl]}" fill="{"#9b3a22" if on else "#f6c99b"}" fill-opacity="{0.92 if on else 0.55}" '
+                f'fill-rule="evenodd" stroke="{"#7a2b17" if on else "#b4512b"}" stroke-width="1.6" stroke-linejoin="round"/>')
         x, y, fs = LBL[sl]
         txt = (f'<text x="{x}" y="{y}" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="{fs}" '
                f'font-weight="600" fill="{"#ffffff" if on else "#2a2320"}">{c["name"].replace(" County", "")}</text>')
@@ -508,10 +506,7 @@ def county_map(highlight, link=True):
             out.append(f'<a href="service-areas/{sl}/index.html" aria-label="{c["name"]}">{poly}{txt}</a>')
         else:
             out.append(poly + txt)
-    fr_fill = "#ffffff" if hi == "warren-county" else "#2a2320"
-    out.append(f'<circle cx="352" cy="359" r="6" fill="#e07a2e" stroke="#fff" stroke-width="2"/>'
-               f'<text x="352" y="384" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" fill="{fr_fill}">Front Royal</text>')
-    out.append('<text x="52" y="716" font-family="Inter,Arial,sans-serif" font-size="13" fill="#9a9089">Approximate county outlines</text></svg>')
+    out.append('<text x="52" y="716" font-family="Inter,Arial,sans-serif" font-size="13" fill="#9a9089">County boundaries: U.S. Census Bureau</text></svg>')
     return "".join(out)
 
 def relink(html, depth):

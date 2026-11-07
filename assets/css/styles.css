@@ -355,8 +355,8 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
 .towns li:has(a):hover { border-color: var(--brick); color: var(--brick); }
 .towns li.hub:has(a):hover { color: var(--ember-soft); }
 .cmap { width: 100%; height: auto; }
-.cmap a polygon { transition: fill-opacity .2s ease; }
-.cmap a:hover polygon, .cmap a:focus polygon { fill-opacity: 1; }
+.cmap a path { transition: fill-opacity .2s ease; }
+.cmap a:hover path, .cmap a:focus-visible path { fill-opacity: 1; }
 .cmap a:focus { outline: none; }
 .area-layout { display: grid; grid-template-columns: 1.7fr 1fr; gap: 56px; align-items: start; }
 .area-main h2 { font-size: clamp(24px, 2.8vw, 30px); margin: 48px 0 14px; }
