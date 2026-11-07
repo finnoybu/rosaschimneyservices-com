@@ -6,3 +6,7 @@ _build/__pycache__/
 .DS_Store
 Thumbs.db
 _build/publish-to-github.bat
+brand/original-logo.png
+brand/original-logo-preview.png
+brand/zoom.html
+brand/export.html

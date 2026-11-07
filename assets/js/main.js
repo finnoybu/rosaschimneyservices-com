@@ -111,6 +111,21 @@
       var sel = form.querySelector("#service");
       Array.prototype.forEach.call(sel.options, function (o) { if (o.value === preselect) sel.value = preselect; });
     }
+    // Email becomes required when the customer asks to be contacted by email
+    var emailInput = form.querySelector("#email");
+    var emailReq = document.getElementById("email-req");
+    var syncEmailRequired = function () {
+      var picked = form.querySelector('input[name="contact"]:checked');
+      var needEmail = !!picked && picked.value === "Email";
+      emailInput.required = needEmail;
+      if (emailReq) emailReq.hidden = !needEmail;
+      if (!needEmail) emailInput.setCustomValidity("");
+    };
+    Array.prototype.forEach.call(form.querySelectorAll('input[name="contact"]'), function (r) {
+      r.addEventListener("change", syncEmailRequired);
+    });
+    syncEmailRequired();
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
