@@ -83,9 +83,12 @@
       var wd = "", hr = 0;
       parts.forEach(function (p) { if (p.type === "weekday") wd = p.value; if (p.type === "hour") hr = parseInt(p.value, 10) % 24; });
       var open = wd !== "Sun" && hr >= 7 && hr < 19;
-      label = open ? T("Open now until 7 PM", "Abierto ahora hasta las 7 PM") : T("Closed now. Text us anytime", "Cerrado ahora. Escríbanos cuando quiera");
+      label = open ? T("Open now until 7 PM", "Abierto ahora hasta las 7 PM") : T("Emergency calls accepted 24/7", "Atendemos emergencias 24/7");
+      // after hours the top bar switches to the emergency line (phone icon, alert color)
+      Array.prototype.forEach.call(document.querySelectorAll(".u-status"), function (el) { el.classList.toggle("is-emergency", !open); });
     } catch (err) { /* keep default label */ }
-    status.forEach(function (el) { el.textContent = label; });
+    var shortLabel = open ? label : T("Emergencies 24/7", "Emergencias 24/7");
+    status.forEach(function (el) { el.textContent = label; el.setAttribute("data-short", shortLabel); });
   }
 
   // Scroll reveal

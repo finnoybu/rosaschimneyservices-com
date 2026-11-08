@@ -465,7 +465,7 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
 }
 @media (max-width: 720px) {
   body { padding-bottom: 64px; }
-  .utility .u-left > span:nth-child(2) { display: none; }
+  .utility .u-left > :nth-child(2) { display: none; }
   .utility .u-right .u-email { display: none; }
   .site-header .wrap { min-height: 70px; }
   .brand .mark { width: 38px; height: 38px; }
@@ -608,11 +608,11 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
 }
 
 /* ---------- Logo ---------- */
-.brand-logo { height: 60px; width: auto; display: block; }
-.site-footer .brand-logo { height: 62px; }
+.brand-logo { height: 52px; width: auto; display: block; }
+.site-footer .brand-logo { height: 56px; }
 @media (max-width: 720px) {
-  .brand-logo { height: 46px; }
-  .site-footer .brand-logo { height: 52px; }
+  .brand-logo { height: 40px; }
+  .site-footer .brand-logo { height: 48px; }
 }
 
 /* ---------- Home promo cards ---------- */
@@ -665,3 +665,40 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
 @media (max-width: 480px) {
   .check-card, .check-result, .tips-box { padding-left: 18px; padding-right: 18px; }
 }
+
+/* ---------- Spanish spoken here ---------- */
+.utility .u-habla { font-size: 12px; font-weight: 600; color: var(--ember-soft); letter-spacing: .02em; }
+html[lang="es"] .utility .u-habla { display: none; }
+.habla { display: inline-block; margin-top: 14px; padding: 7px 14px; border: 1px solid rgba(224,122,46,.55); border-radius: 999px; font-size: 14.5px; color: rgba(255,255,255,.85); }
+.habla b { color: var(--ember-soft); font-weight: 700; }
+.c-card .c-habla { display: block; font-style: normal; font-size: 12.5px; font-weight: 600; color: var(--brick); margin-top: 2px; }
+@media (max-width: 640px) { .utility .u-habla { display: none; } }
+
+/* ---------- Top bar: after-hours emergency line ---------- */
+.utility .u-status i { display: inline-flex; font-style: normal; }
+.utility .u-status .ic-em { display: none; }
+.utility .u-status.is-emergency .ic-clock { display: none; }
+.utility .u-status.is-emergency .ic-em { display: inline-flex; }
+.utility .u-status.is-emergency { color: #ffb08a; font-weight: 600; }
+.utility .u-status.is-emergency svg { color: #ff6b45; animation: em-pulse 2.4s ease-in-out infinite; }
+@keyframes em-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .utility .u-status.is-emergency svg { animation: none; } }
+.utility .u-status, .utility .u-status [data-open-status] { white-space: nowrap; }
+@media (max-width: 480px) {
+  .utility .u-status [data-open-status][data-short] { font-size: 0; }
+  .utility .u-status [data-open-status][data-short]::after { content: attr(data-short); font-size: 13px; }
+}
+/* keep the top bar on one line once the emergency line shows */
+@media (max-width: 1000px) { .utility .u-left > :nth-child(2) { display: none; } }
+@media (max-width: 860px) { .utility .u-right .u-email { display: none; } }
+
+/* ---------- CSIA verification links ---------- */
+a.csia-link { color: inherit; text-decoration: none; transition: box-shadow .2s ease, transform .2s ease; }
+a.csia-link:hover { transform: translateY(-2px); }
+a.cred.csia-link:hover, a.badge-float.csia-link:hover { box-shadow: var(--shadow-lg); }
+.utility a.u-csia { display: inline-flex; align-items: center; gap: 8px; }
+
+/* ---------- Footer shield logo ---------- */
+.foot-shield { display: inline-block; }
+.foot-shield img { width: 120px; height: auto; display: block; }
+@media (max-width: 720px) { .foot-shield img { width: 104px; } }

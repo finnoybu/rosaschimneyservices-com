@@ -167,9 +167,6 @@ def horizontal(name_fill=None, sub_fill=None, rule_fill=None):
     return svg(int(left + width + 20), 300, "".join(o), "Rosas Chimney Services")
 
 if __name__ == "__main__":
-  os.makedirs(OUT, exist_ok=True)
-  files = {"rosas-logo-primary.svg": primary(True), "rosas-logo-primary-no-llc.svg": primary(False),
-           "rosas-logo-horizontal.svg": horizontal(), "rosas-logo-icon.svg": icon()}
-  for n, c in files.items():
-      open(os.path.join(OUT, n), "w").write(c)
-      print(n, len(c))
+  # Retired: this drew the early logo attempts. The logo set is now built from the
+  # primary shield logo by brand_set.py, so nothing here writes files anymore.
+  print("Use brand_set.py to rebuild the logo set.")

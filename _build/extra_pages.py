@@ -63,7 +63,7 @@ def rentals(B):
     <div class="value reveal">{I['inspect']}<h3>{t("Photos for your records", "Fotos para sus registros")}</h3><p>{t("Dated photos and a plain-language summary of what we cleaned, inspected and found.", "Fotos con fecha y un resumen claro de lo que limpiamos, inspeccionamos y encontramos.")}</p></div>
     <div class="value reveal">{I['home']}<h3>{t("No need to be there", "No tiene que estar presente")}</h3><p>{t("Send the access details and we will text you when the job is done.", "Envíenos los datos de acceso y le avisaremos por mensaje cuando terminemos.")}</p></div>
     <div class="value reveal">{I['cap']}<h3>{t("Caps that keep critters out", "Sombreretes que impiden la entrada de animales")}</h3><p>{t("A sturdy cap and screen stop animals, nests and rain while the property sits empty.", "Un sombrerete resistente con malla detiene animales, nidos y lluvia mientras la propiedad está vacía.")}</p></div>
-    <div class="value reveal">{I['users']}<h3>{t("More than one property?", "¿Tiene más de una propiedad?")}</h3><p>{t("We can group visits so every cabin is ready before the season starts.", "Podemos agrupar las visitas para que todas sus cabañas estén listas antes de que empiece la temporada.")}</p></div>
+    <div class="value reveal">{I['users']}<h3>{t("More than one property?", "¿Tiene más de una propiedad?")}</h3><p>{t("We group visits so every cabin is ready before the season, with a discount for multiple properties. Property managers welcome.", "Agrupamos las visitas para que todas sus cabañas estén listas antes de la temporada, con descuento por varias propiedades. Administradores de propiedades, bienvenidos.")}</p></div>
     <div class="value reveal">{I['flame']}<h3>{t("Stoves and inserts too", "También estufas e insertos")}</h3><p>{t("Wood stoves, pellet stoves and inserts get the same careful cleaning and inspection.", "Las estufas de leña, de pellets y los insertos reciben la misma limpieza e inspección cuidadosa.")}</p></div>
   </div>
 </div></section>
@@ -102,7 +102,7 @@ def rentals(B):
     extra = '<script type="application/ld+json">' + B["json"].dumps(faq_ld(faqs)) + '</script>\n'
     return B["head"](t("Chimney Service for Vacation Rentals and Cabins | Rosas Chimney Services", "Servicio de chimeneas para alquileres vacacionales y cabañas | Rosas Chimney Services"),
                      t("Chimney sweeping and inspections for cabins and vacation rentals in the Shenandoah Valley, scheduled between guests, with dated photos for your records. Call or text (540) 431-9629.",
-                       "Deshollinado e inspecciones para cabañas y alquileres vacacionales en el valle de Shenandoah, programados entre huéspedes, con fotos fechadas para sus registros. Llame o envíe un texto al (540) 431-9629."),
+                       "Deshollinado e inspecciones para cabañas y alquileres vacacionales en el valle de Shenandoah, programados entre huéspedes, con fotos fechadas para sus registros. Llame o envíe un mensaje al (540) 431-9629."),
                      "vacation-rentals.html", extra) + B["header"]("vacation-rentals.html") + body + B["footer"]()
 
 def self_check(B):
@@ -176,3 +176,8 @@ def self_check(B):
 PROMO = (t("Not sure your chimney needs service?", "¿No sabe si su chimenea necesita servicio?"), t("Take our one-minute self-check", "Haga nuestra autoevaluación de un minuto"),
          t("Own a cabin or vacation rental?", "¿Tiene una cabaña o un alquiler vacacional?"), t("Chimney care built around your bookings", "Cuidado de chimeneas según sus reservas"),
          t("Self-Check", "Autoevaluación"), t("Rental Hosts", "Para anfitriones"))
+
+for _s in ("Hablamos español", "Hablamos español.", "Llame y pregunte por Mark."):
+    EXTRA_ES[_s] = _s
+
+EXTRA_ES["Verify on the CSIA website"] = "Verificar en el sitio web de la CSIA"

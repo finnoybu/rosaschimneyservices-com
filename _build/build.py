@@ -21,13 +21,18 @@ IG = "https://www.instagram.com/rosaschimneyservices/"
 BOOK = "https://calendar.app.google/X7SwnxsRZ6jpEQaa7"
 YELP = "https://www.yelp.com/biz/rosas-chimney-services-front-royal"
 CSIA = "11978"
+CSIA_URL = "https://online.csia.org/csiassa/rflcustomdisplay.detail_page?p_search_serno=1038306&amp;p_vendor_serno=103526&amp;p_cust_id="
+CSIA_A = f'href="{CSIA_URL}" target="_blank" rel="noopener" title="Verify on the CSIA website"'
 OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 NAV = [("index.html", "Home"), ("services.html", "Services"), ("about.html", "About"),
        ("service-areas/index.html", "Service Areas"), ("contact.html", "Contact")]
 
 BRAND = ('<a class="brand" href="index.html" aria-label="%s home">'
-         '<img class="brand-logo" src="assets/img/logo-horizontal-light.svg?v=%s" alt="Rosas Chimney Services" width="162" height="50"></a>') % (NAME, _ver("assets/img/logo-horizontal-light.svg"))
+         '<img class="brand-logo" src="assets/img/logo-horizontal-light.svg?v=%s" alt="Rosas Chimney Services" width="234" height="50"></a>') % (NAME, _ver("assets/img/logo-horizontal-light.svg"))
+
+FOOT_BRAND = ('<a class="foot-shield" href="index.html" aria-label="%s home">'
+              '<img src="assets/img/logo-shield.svg?v=%s" alt="Rosas Chimney Services" width="120" height="160" loading="lazy"></a>') % (NAME, _ver("assets/img/logo-shield.svg"))
 
 def head(title, desc, path, extra=""):
     clean = path[:-len("index.html")] if path.endswith("index.html") else path
@@ -69,8 +74,8 @@ def header(path):
         return h == path or (h.startswith("service-areas/") and path.startswith("service-areas/"))
     links = "".join(f'<a href="{h}"{cur if is_cur(h) else ""}>{t}</a>' for h, t in NAV)
     return f"""<div class="utility"><div class="wrap">
-  <div class="u-left"><span>{I['clock']}<span data-open-status>Mon to Sat, 7 AM to 7 PM</span></span><span>{I['award']}CSIA Certified Sweep #{CSIA}</span></div>
-  <div class="u-right"><!--LANG--><a class="u-email" href="mailto:{EMAIL}">{EMAIL}</a></div>
+  <div class="u-left"><span class="u-status"><i class="ic-clock">{I['clock']}</i><i class="ic-em">{I['phone']}</i><span data-open-status>Mon to Sat, 7 AM to 7 PM</span></span><a class="u-csia" {CSIA_A}>{I['award']}CSIA Certified Sweep #{CSIA}</a></div>
+  <div class="u-right"><span class="u-habla" lang="es">Hablamos español</span><!--LANG--><a class="u-email" href="mailto:{EMAIL}">{EMAIL}</a></div>
 </div></div>
 <header class="site-header"><div class="wrap">
   {BRAND}
@@ -103,16 +108,16 @@ def footer():
     return f"""</main>
 <footer class="site-footer"><div class="wrap">
   <div class="foot-grid">
-    <div>{BRAND}
+    <div>{FOOT_BRAND}
       <p class="about-blurb">Family-owned chimney care for Warren County, the northern Shenandoah Valley, Loudoun and Fauquier. CSIA Certified and fully insured.</p>
       <div class="social"><a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">{I['facebook']}</a><a href="{IG}" target="_blank" rel="noopener" aria-label="Instagram">{I['instagram']}</a><a href="{YELP}" target="_blank" rel="noopener" aria-label="Yelp reviews">{I['review']}</a></div>
-      <div class="foot-seal"><img src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="64" height="64" loading="lazy"><span>CSIA Certified<br>Sweep #{CSIA}</span></div>
+      <a class="foot-seal csia-link" {CSIA_A}><img src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="64" height="64" loading="lazy"><span>CSIA Certified<br>Sweep #{CSIA}</span></a>
     </div>
     <div><h4>Services</h4><ul>{svc}</ul></div>
     <div><h4>Service Areas</h4><ul>{"".join(f'<li><a href="service-areas/{c["slug"]}/index.html">{c["name"]}</a></li>' for c in COUNTIES)}</ul></div>
     <div><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="service-areas/index.html">All Service Areas</a></li><li><a href="services.html#faq">FAQ</a></li><li><a href="chimney-check.html">{PROMO[4]}</a></li><li><a href="vacation-rentals.html">{PROMO[5]}</a></li><li><a href="contact.html">Request an Estimate</a></li></ul></div>
     <div><h4>Contact</h4><ul class="foot-contact">
-      <li>{I['phone']}<span><a href="tel:{PHONE}">{PHONE_DISPLAY}</a><small class="fc-note">Call or text</small></span></li>
+      <li>{I['phone']}<span><a href="tel:{PHONE}">{PHONE_DISPLAY}</a><small class="fc-note">Call or text</small><small class="fc-note" lang="es">Hablamos español</small></span></li>
       <li>{I['mail']}<a href="mailto:{EMAIL}">{EMAIL.replace("@", "@<wbr>")}</a></li>
       <li>{I['clock']}<span>Mon to Sat, 7 AM to 7 PM<br>Closed Sunday</span></li>
       <li>{I['pin']}<span>Based in Front Royal, VA<small class="fc-note">Serving nine counties</small></span></li>
@@ -194,6 +199,7 @@ def index():
       <a class="btn btn-ghost-light" href="contact.html">Request an Estimate</a>
     </div>
     <p class="hero-note">Prefer texting? Send us a text at the same number for estimates and pricing.</p>
+    <p class="habla" lang="es"><b>Hablamos español.</b> Llame y pregunte por Mark.</p>
   </div>
 </section>
 
@@ -229,7 +235,7 @@ def index():
   </div>
   <div class="art-card reveal">
     <img src="assets/img/handshake.jpg" alt="Close-up of a friendly handshake" width="1000" height="800" loading="lazy">
-    <div class="badge-float"><img class="seal" src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="56" height="56" loading="lazy"><div><b>Sweep #{CSIA}</b><span>CSIA Certified &amp; insured</span></div></div>
+    <a class="badge-float csia-link" {CSIA_A}><img class="seal" src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="56" height="56" loading="lazy"><div><b>Sweep #{CSIA}</b><span>CSIA Certified &amp; insured</span></div></a>
   </div>
 </div></section>
 
@@ -378,8 +384,8 @@ def about():
     <h2>We’re Mark and Peyton</h2>
     <p>Rosas Chimney Services was started with a simple idea: homeowners deserve a chimney company that shows up when it says it will, explains things clearly and leaves the house cleaner than it found it.</p>
     <p>As a small, local business, every job carries our name. That is why we take the time to do it right, from a routine sweep to a full stove and chimney installation.</p>
-    <div class="tags"><span>Family-owned</span><span>Latino-owned</span><span>Women-owned</span><span>Small business</span></div>
-    <div class="cred"><img class="seal" src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="88" height="88" loading="lazy"><div><b>CSIA Certified Chimney Sweep #{CSIA}</b><span>Certified by the Chimney Safety Institute of America and fully insured.</span></div></div>
+    <div class="tags"><span>Family-owned</span><span>Latino-owned</span><span>Women-owned</span><span>Small business</span><span lang="es">Hablamos español</span></div>
+    <a class="cred csia-link" {CSIA_A}><img class="seal" src="assets/img/csia-certified.png" alt="CSIA Certified Chimney Sweep seal" width="88" height="88" loading="lazy"><div><b>CSIA Certified Chimney Sweep #{CSIA}</b><span>Certified by the Chimney Safety Institute of America and fully insured.</span></div></a>
   </div>
   <div class="art-card photo reveal"><img src="assets/img/mark-and-peyton.jpg" alt="Mark and Peyton of Rosas Chimney Services, smiling outdoors in the Shenandoah Valley" width="1080" height="1350" loading="lazy"></div>
 </div></section>
@@ -427,7 +433,7 @@ def contact():
                      "The fastest way to reach us is a call or text. You can also book a visit online, or send the form below and we will get back to you.")
     body += f"""<section class="section"><div class="wrap contact-grid">
   <div class="contact-cards">
-    <a class="c-card" href="tel:{PHONE}"><span class="ico">{I['phone']}</span><span><small>Call</small><b>{PHONE_DISPLAY}</b></span></a>
+    <a class="c-card" href="tel:{PHONE}"><span class="ico">{I['phone']}</span><span><small>Call</small><b>{PHONE_DISPLAY}</b><em class="c-habla" lang="es">Hablamos español</em></span></a>
     <a class="c-card" href="{BOOK}" target="_blank" rel="noopener"><span class="ico">{I['calendar']}</span><span><small>Schedule online</small><b>Book a visit</b></span></a>
     <a class="c-card mobile-only" href="sms:{PHONE}"><span class="ico">{I['sms']}</span><span><small>Text for estimates &amp; pricing</small><b>{PHONE_DISPLAY}</b></span></a>
     <a class="c-card" href="mailto:{EMAIL}"><span class="ico">{I['mail']}</span><span><small>Email</small><b>{EMAIL.replace("@", "@<wbr>")}</b></span></a>
@@ -726,6 +732,9 @@ for name, html in list(pages.items()):
     es_html = es_html.replace(f'<link rel="canonical" href="{canon}">', f'<link rel="canonical" href="{clean_url("es/" + name)}">')
     es_html = es_html.replace(f'<meta property="og:url" content="{canon}">', f'<meta property="og:url" content="{clean_url("es/" + name)}">')
     es_html = es_html.replace("<!--LANG-->", lang_toggle(name, "es"))
+    # "Hablamos español" badges only make sense on the English pages
+    es_html = re.sub(r'\n?\s*<p class="habla" lang="es">.*?</p>', "", es_html)
+    es_html = re.sub(r'<(span|small|em)(?: class="[^"]*")? lang="es">Hablamos español</\1>', "", es_html)
     pages[name] = en_html
     es_pages["es/" + name] = es_html
 if MISSES:
