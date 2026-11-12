@@ -1,0 +1,158 @@
+ROSAS CHIMNEY SERVICES WEBSITE
+HOW TO PUT THE NEW SITE LIVE
+=============================================================================
+
+WHAT'S IN THIS PACKAGE
+  1-START-HERE-Setup-Guide.txt   This file. Putting the new site live.
+  2-Editing-Guide.txt            How to make changes after it's live.
+  3-Logos-Guide.txt              Which logo file to use where.
+  website\                       The complete website (English and Spanish).
+  logos\                         The full logo set, for print, shirts, the truck, etc.
+  gitlab-pages-only\             One extra file, used ONLY in Setup B below.
+
+The website is plain HTML pages and images. There is nothing to install, no
+database and no monthly software. It goes into the same GitLab project your
+current site lives in, and Cloudflare keeps serving it at
+https://www.rosaschimneyservices.com exactly as it does today.
+
+-----------------------------------------------------------------------------
+STEP 1.  FIND OUT WHICH SETUP YOU HAVE  (2 minutes)
+-----------------------------------------------------------------------------
+Your site is stored in GitLab and delivered by Cloudflare. That can be wired up
+one of two ways, and a couple of steps differ, so check first.
+
+  1. Sign in at https://dash.cloudflare.com
+  2. In the left menu choose  Workers & Pages  (it may be listed under
+     Compute or Build).
+  3. Look for a project for your website.
+
+  - You see your website's project there, and it shows it is connected to
+    GitLab ............................................ you have SETUP A.
+  - There is no project for the website there ......... you have SETUP B.
+    (GitLab hosts the site and Cloudflare sits in front of it.) To confirm,
+    open your project in GitLab and choose  Deploy  >  Pages  in the left
+    menu. It should show your site's address.
+  - Neither one matches? Check with whoever first set up the website in
+    GitLab and Cloudflare before going further.
+
+-----------------------------------------------------------------------------
+STEP 2.  REPLACE THE OLD SITE WITH THE NEW ONE IN GITLAB  (10 minutes)
+-----------------------------------------------------------------------------
+Use Chrome or Edge on a Windows computer for this step.
+
+  1. Unzip this package somewhere easy to find, such as your Desktop.
+  2. In GitLab, open your website's project. Click the blue  Code  button
+     (or  Edit) and choose  Web IDE. A code editor opens in your browser.
+  3. In the file list on the left, delete the OLD website files:
+     right-click each file or folder and choose  Delete.
+       - Setup B: do NOT delete the file named  .gitlab-ci.yml
+       - Leave any file whose name starts with a dot (.) alone.
+  4. On your computer, open the  website  folder from this package, press
+     Ctrl+A to select everything inside it, and drag it all into the file
+     list in the Web IDE. Wait until every file and folder appears
+     (you should see  index.html  and the folders  assets,  es  and
+     service-areas  at the top level).
+       - Setup B only: if your project had no  .gitlab-ci.yml  file, also
+         drag in the  .gitlab-ci.yml  file from the  gitlab-pages-only
+         folder. (Windows may hide files that start with a dot. In File
+         Explorer choose View > Show > Hidden items.)
+  5. Click the  Source Control  icon in the far-left bar (it looks like a
+     branching line, and shows a number). Type a message such as
+     "New website" and click  Commit and push  (or  Commit to main).
+     If it asks whether to create a new branch, choose to commit to the
+     current (main) branch.
+
+That's the only upload. From now on GitLab and Cloudflare update the live
+site automatically every time a change is committed.
+
+If dragging the folder into the Web IDE doesn't work on your computer, try
+Chrome on a Windows PC. If it still won't take the folder, use Git instead
+(free, from https://git-scm.com). In a command window:
+    git clone <your project's clone URL, from the blue Code button>
+    cd <the project folder it creates>
+Then, in File Explorer, delete the old website files from that folder
+(keep files starting with a dot, and keep .gitlab-ci.yml for Setup B),
+copy in everything from this package's  website  folder, and run:
+    git add -A
+    git commit -m "New website"
+    git push
+
+-----------------------------------------------------------------------------
+STEP 3.  CLOUDFLARE  (5 minutes)
+-----------------------------------------------------------------------------
+SETUP A (Cloudflare Workers & Pages project connected to GitLab)
+  1. In Cloudflare, open  Workers & Pages  and click your website's project.
+  2. Open  Settings  >  Build  (Build configuration) and make sure it reads:
+        Framework preset ........ None
+        Build command ........... exit 0
+        Build output directory .. /
+     Save if you changed anything.
+  3. Open the  Deployments  tab. Your commit from Step 2 should appear and
+     finish with a green "Success" within a minute or two. If you changed a
+     setting in step 2, click  Retry deployment  on the newest one.
+
+SETUP B (GitLab Pages, with Cloudflare in front)
+  0. Open the file  .gitlab-ci.yml  in your project. Under  script:  it
+     must contain these three lines (add them if they're missing, lined up
+     with the other "- " lines), or GitLab will find nothing to publish:
+         - mkdir .public
+         - cp -r * .public
+         - mv .public public
+  1. In GitLab, choose  Build  >  Pipelines  in the left menu. Wait for the
+     newest pipeline to show a green "Passed" (usually 1 to 3 minutes).
+  2. In Cloudflare, click your domain (rosaschimneyservices.com), then
+     Caching  >  Configuration  >  Purge Everything, and confirm. This
+     clears out copies of the old site that Cloudflare was holding.
+
+Nothing else changes in Cloudflare. Your domain, DNS and security settings
+stay exactly as they are.
+
+-----------------------------------------------------------------------------
+STEP 4.  CHECK THE LIVE SITE  (5 minutes)
+-----------------------------------------------------------------------------
+Open https://www.rosaschimneyservices.com in a private/incognito window (so you
+don't see an old saved copy) and check:
+
+  [ ] The home page shows the new design and logo.
+  [ ] The EN | ES switch at the top swaps between English and Spanish.
+  [ ] Tapping the phone number on your phone starts a call.
+  [ ] The menu links (Services, About, Service Areas, Contact) all work.
+  [ ] On the Contact page, "Send by Email" opens an email addressed to
+      rosaschimneyservices@gmail.com.
+  [ ] https://www.rosaschimneyservices.com/sitemap.xml shows a list of pages.
+
+If anything looks wrong, see "IF SOMETHING GOES WRONG" below.
+
+-----------------------------------------------------------------------------
+AFTER LAUNCH  (one time, about 20 minutes)
+-----------------------------------------------------------------------------
+  1. Google Business Profile: make sure the website link is
+     https://www.rosaschimneyservices.com
+  2. Facebook, Instagram and Yelp: same website link in each profile.
+  3. Google Search Console (free) helps Google find all 97 pages quickly:
+       a. Go to https://search.google.com/search-console and add the
+          property rosaschimneyservices.com. Because your domain is on
+          Cloudflare, Google can verify it automatically with a couple of
+          clicks.
+       b. Choose  Sitemaps  in the left menu, enter  sitemap.xml  and
+          click  Submit.
+  4. If your old website had pages at addresses the new site doesn't use
+     (for example /about-us or /gallery), point them to the new pages so old
+     links and bookmarks keep working. In GitLab, add a new file named
+     _redirects  (no extension) next to index.html, with one line per old
+     address, then commit:
+         /about-us   /about      301
+         /gallery    /           301
+     Both Cloudflare and GitLab Pages read this file automatically.
+
+-----------------------------------------------------------------------------
+IF SOMETHING GOES WRONG
+-----------------------------------------------------------------------------
+  - Setup A: in Cloudflare  Workers & Pages  >  your project  >
+    Deployments, find the last deployment from before today, click the
+    three dots next to it and choose  Rollback to this deployment. The old
+    site is back instantly.
+  - Setup B: in GitLab choose  Code  >  Commits, open your "New website"
+    commit, click  Options  >  Revert, and commit the revert to main.
+  - Nothing in this process can damage your domain, email or Cloudflare
+    account. Rolling back simply puts the old site back.

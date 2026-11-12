@@ -1,0 +1,88 @@
+ROSAS CHIMNEY SERVICES WEBSITE
+HOW TO MAKE CHANGES
+=============================================================================
+
+Every change is made in GitLab, in your browser. When you commit (save) a
+change, the live site updates by itself within a few minutes. If you ever
+make a mistake, nothing is lost: GitLab keeps every earlier version.
+
+-----------------------------------------------------------------------------
+THE ONE RULE TO REMEMBER: EVERY PAGE EXISTS TWICE
+-----------------------------------------------------------------------------
+Each English page has a Spanish twin with the same name inside the  es
+folder. When you change wording on one, make the same change on the other,
+or the two languages drift apart.
+
+  English page                         Spanish page
+  index.html  (home)                   es/index.html
+  services.html                        es/services.html
+  about.html                           es/about.html
+  contact.html                         es/contact.html
+  vacation-rentals.html                es/vacation-rentals.html
+  chimney-check.html  (self-check)     es/chimney-check.html
+  service-areas/... (county and town)  es/service-areas/...
+  404.html  ("page not found")         (English only)
+
+-----------------------------------------------------------------------------
+SMALL CHANGE ON ONE PAGE  (fixing a sentence, a word, a price)
+-----------------------------------------------------------------------------
+  1. In GitLab, open your website's project and click the file to change
+     (for example  about.html).
+  2. Click  Edit  >  Edit single file.
+  3. Press Ctrl+F and type a few words near what you want to change.
+  4. Change only the words. Leave everything inside < and > alone.
+  5. Scroll down, type a short note (e.g. "Update about page") and click
+     Commit changes.
+  6. Do the same on the Spanish twin in the  es  folder.
+
+-----------------------------------------------------------------------------
+CHANGE THAT APPEARS ON EVERY PAGE  (phone, email, hours, address)
+-----------------------------------------------------------------------------
+The header, footer and contact details repeat on all 97 pages. Change them
+all at once with find-and-replace:
+
+  1. In GitLab, open the project and choose  Code  (or  Edit)  >  Web IDE.
+  2. Press Ctrl+Shift+H. A search-and-replace panel opens on the left.
+  3. In the first box type the old text exactly, e.g.  (540) 431-9629
+     In the second box type the new text.
+  4. Look over the list of matches, then click the  Replace All  icon
+     (to the right of the second box).
+  5. Click the  Source Control  icon in the far-left bar, type a note and
+     click  Commit and push  to the main branch.
+
+Things to search for:
+  - Phone number: search for  431-9629  AND  5404319629  (the second one is
+    the number behind the tap-to-call and tap-to-text buttons).
+  - Email: rosaschimneyservices@gmail.com  (also in assets/js/main.js)
+  - Hours: 7 AM to 7 PM  and the Spanish  7 AM a 7 PM
+
+If your hours change, also tell Ken: the "Open now" / "Closed now"
+message at the top of every page is set to Mon to Sat,
+7 AM to 7 PM, inside  assets/js/main.js.
+
+-----------------------------------------------------------------------------
+REPLACING THE "RECENT WORK" PHOTOS
+-----------------------------------------------------------------------------
+The six home-page photos are in  assets/img/work/. To swap one:
+  - Make the new photo a portrait JPG (taller than wide, ideally 900 x 1125
+    pixels) and give it EXACTLY the same file name as the photo it replaces.
+  - In GitLab open  assets/img/work/, click the photo, choose  Replace,
+    upload the new file and commit.
+  - The captions under the photos are in  index.html  and es/index.html.
+
+-----------------------------------------------------------------------------
+PLEASE LEAVE THESE TO KEN
+-----------------------------------------------------------------------------
+  - Adding or removing pages, or renaming any file or folder (links
+    between pages depend on the names).
+  - Anything in  assets/css  (the design) or  assets/js  (the buttons,
+    form and open/closed message), apart from the email noted above.
+  - Logos and icons.
+  - Adding a full photo gallery.
+
+-----------------------------------------------------------------------------
+IF A CHANGE GOES WRONG
+-----------------------------------------------------------------------------
+In GitLab choose  Code  >  Commits, open the commit that caused the problem,
+click  Options  >  Revert, and commit. The site goes back to how it was.
+Then let Ken know.

@@ -1,0 +1,27 @@
+ROSAS CHIMNEY SERVICES LOGOS
+=============================================================================
+Every logo comes in two formats:
+  .svg  Sharp at any size. Give this one to printers, sign and vehicle
+        shops, and embroidery or t-shirt companies.
+  .png  A ready-made image with a see-through background, for documents,
+        email signatures and social media.
+
+WHICH ONE TO USE
+  rosas-logo-primary            The main shield logo. Light backgrounds.
+  rosas-logo-primary-cream      The shield filled with cream. Works on ANY
+                                background, light or dark. Used in the
+                                website footer.
+  rosas-logo-primary-reversed   Shield with cream lettering, for dark
+                                backgrounds (dark shirts, dark vehicles).
+  rosas-logo-horizontal         Wide version for letterhead, invoices,
+                                email signatures, light backgrounds.
+  rosas-logo-horizontal-reversed  Wide version for dark backgrounds. Used in
+                                the website header.
+  rosas-logo-icon               Shield and emblem, no words. Social media
+                                profile pictures, stickers, small spaces.
+  rosas-logo-icon-reversed      Same, for dark backgrounds.
+  rosas-favicon.svg             The tiny browser-tab icon.
+
+COLORS (for printers)
+  Navy   #2B3D4F        Brick red  #A63C24
+  Gold   #D79136        Cream      #F6EBDD

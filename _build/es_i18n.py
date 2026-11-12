@@ -62,7 +62,7 @@ def tx_text(seg):
     if not re.search(r"[A-Za-z]{2}", norm) or re.fullmatch(r"[\w.+-]+@[\w.-]+|https?://\S+", norm): return seg
     return esc_text(lead) + esc_text(translate(norm)) + esc_text(trail)
 
-META = {"description", "og:title", "og:description"}
+META = {"description", "og:title", "og:description", "og:image:alt"}
 def tx_tag(tag):
     def attr(m):
         v = H.unescape(m[2]).strip()

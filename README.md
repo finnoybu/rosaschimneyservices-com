@@ -1,14 +1,21 @@
 # rosaschimneyservices.com
 
+> **Site designer's working copy and demo.** This GitHub repository and the preview at
+> https://finnoybu.github.io/rosaschimneyservices-com/ exist only so the site designer
+> (Ken Tannenbaum) can build and show the site. They are not the live website and are
+> for the site designer's use only. The live site is hosted by Rosas Chimney Services
+> at https://rosaschimneyservices.com.
+
 Static website for **Rosas Chimney Services LLC**, a family-owned, CSIA Certified chimney sweep based in Front Royal, Virginia.
 
-**Preview:** https://finnoybu.github.io/rosaschimneyservices-com/
+**Demo preview (site designer only):** https://finnoybu.github.io/rosaschimneyservices-com/
 
 ## What's here
 
 - Plain HTML, CSS and JavaScript. No framework, no build step needed to host it.
 - Home, services, about and contact pages, a service-area hub, 9 county pages and 32 town pages.
-- `README.txt` has plain-English hosting instructions for the site owners.
+- `README.txt` is the owners' guide that ships with the site.
+- `_build/`, `brand/` and `_build/publish-to-github.bat` are site designer tools and are not part of the site handed to the owners.
 
 ## Editing
 

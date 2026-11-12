@@ -1,0 +1,15 @@
+# Publishes the website with GitLab Pages.
+# Use this file ONLY if your site is hosted by GitLab Pages (Setup B in the
+# setup guide). If Cloudflare Workers & Pages builds your site (Setup A),
+# do not add this file.
+pages:
+  stage: deploy
+  script:
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

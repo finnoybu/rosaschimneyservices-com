@@ -77,17 +77,16 @@
   // Open now / closed indicator (Mon to Sat, 7 AM to 7 PM, Eastern)
   var status = document.querySelectorAll("[data-open-status]");
   if (status.length) {
-    var label = T("Mon to Sat, 7 AM to 7 PM", "Lun. a sáb., 7 AM a 7 PM");
+    var label = T("Mon to Sat, 7 AM to 7 PM", "Lun. a sáb., 7 AM a 7 PM"), shortLabel = T("Mon to Sat, 7 to 7", "Lun. a sáb., 7 a 7");
     try {
       var parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short", hour: "numeric", hour12: false }).formatToParts(new Date());
       var wd = "", hr = 0;
       parts.forEach(function (p) { if (p.type === "weekday") wd = p.value; if (p.type === "hour") hr = parseInt(p.value, 10) % 24; });
       var open = wd !== "Sun" && hr >= 7 && hr < 19;
-      label = open ? T("Open now until 7 PM", "Abierto ahora hasta las 7 PM") : T("Emergency calls accepted 24/7", "Atendemos emergencias 24/7");
-      // after hours the top bar switches to the emergency line (phone icon, alert color)
-      Array.prototype.forEach.call(document.querySelectorAll(".u-status"), function (el) { el.classList.toggle("is-emergency", !open); });
+      label = open ? T("Open now until 7 PM", "Abierto ahora hasta las 7 PM") : T("Closed now. Text us anytime", "Cerrado ahora. Escríbanos cuando quiera");
+      // shorter wording for small phones so the top bar stays on one line
+      shortLabel = open ? T("Open until 7 PM", "Abierto hasta las 7 PM") : T("Closed now", "Cerrado ahora");
     } catch (err) { /* keep default label */ }
-    var shortLabel = open ? label : T("Emergencies 24/7", "Emergencias 24/7");
     status.forEach(function (el) { el.textContent = label; el.setAttribute("data-short", shortLabel); });
   }
 
@@ -150,28 +149,133 @@
       var sel = form.querySelector("#service");
       Array.prototype.forEach.call(sel.options, function (o) { if (o.value === preselect) sel.value = preselect; });
     }
-    // Email becomes required when the customer asks to be contacted by email
-    var emailInput = form.querySelector("#email");
-    var emailReq = document.getElementById("email-req");
+    // ---- Field checks. Errors show under each field when the visitor
+    // leaves it, and all of them are checked again on Send.
+    var $ = function (id) { return document.getElementById(id); };
+    var emailInput = $("email"), emailReq = $("email-req");
+    var zipNote = $("zip-note");
+    var ZIPS = window.SERVICE_ZIPS || {};
+    var STATES = "AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split(" ");
+    var NAME_RX = /^[\p{L}\p{M}][\p{L}\p{M}'’. -]*$/u;
+    var EMAIL_RX = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
+    var phoneDigits = function (s) {
+      var d = s.replace(/\D/g, "");
+      if (d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+      return d;
+    };
+    // Virginia ZIP codes start with 201 or 220 to 246
+    var isVaZip = function (z) { var p = +z.slice(0, 3); return p === 201 || (p >= 220 && p <= 246); };
+    var picked = function () {
+      return Array.prototype.filter.call(form.querySelectorAll('input[name="contact"]'), function (c) { return c.checked; })
+        .map(function (c) { return c.value; });
+    };
+    var REQ = T("This field is required.", "Este campo es obligatorio.");
+    var NAME_MSG = T("Please use letters only. Spaces, hyphens and apostrophes are fine.", "Use solo letras. Se permiten espacios, guiones y apóstrofos.");
+    var checks = {
+      fname: function (v) { return !v ? REQ : NAME_RX.test(v) ? "" : NAME_MSG; },
+      lname: function (v) { return !v ? REQ : NAME_RX.test(v) ? "" : NAME_MSG; },
+      email: function (v) {
+        if (!v) return picked().indexOf("Email") > -1 ? T("Enter your email, since you asked us to contact you by email.", "Escriba su correo, ya que pidió que le contactemos por correo.") : "";
+        return EMAIL_RX.test(v) ? "" : T("Please enter a valid email address, like name@example.com.", "Escriba un correo válido, como nombre@ejemplo.com.");
+      },
+      phone: function (v) {
+        if (!v) return REQ;
+        var d = phoneDigits(v);
+        return /^[2-9]\d{2}[2-9]\d{6}$/.test(d) && d.slice(1, 3) !== "11" ? "" : T("Please enter a valid 10-digit phone number, like (540) 555-1234.", "Escriba un número de teléfono válido de 10 dígitos, como (540) 555-1234.");
+      },
+      address1: function (v) { return !v ? REQ : /[A-Za-z]/.test(v) && /\d/.test(v) ? "" : T("Please enter a street address with a house number, like 123 Main St.", "Escriba una dirección con número, como 123 Main St."); },
+      city: function (v) { return !v ? REQ : NAME_RX.test(v) ? "" : T("Please check the city or town name.", "Revise el nombre de la ciudad o pueblo."); },
+      state: function (v) {
+        if (!v) return REQ;
+        if (STATES.indexOf(v.toUpperCase()) < 0) return T("Use the two-letter state, like VA.", "Use las dos letras del estado, como VA.");
+        return v.toUpperCase() === "VA" ? "" : T("We only serve Virginia.", "Solo damos servicio en Virginia.");
+      },
+      zip: function (v) {
+        if (!v) return REQ;
+        if (!/^\d{5}(-\d{4})?$/.test(v)) return T("Enter a 5-digit ZIP code, like 22630.", "Escriba un código postal de 5 dígitos, como 22630.");
+        return isVaZip(v) ? "" : T("This ZIP code is not in Virginia.", "Este código postal no es de Virginia.");
+      },
+      service: function (v) { return v ? "" : T("Please choose a service.", "Elija un servicio."); },
+      contact: function () { return picked().length ? "" : T("Choose at least one way for us to contact you.", "Elija al menos una forma de contactarle."); }
+    };
+    var check = function (id, show) {
+      var el = $(id), err = $(id + "-err");
+      var val = el && el.value !== undefined ? el.value.trim() : "";
+      var m = checks[id](val);
+      if (el && el.setCustomValidity) el.setCustomValidity(m);
+      if (show || !m) {
+        if (err) err.textContent = m;
+        if (el && el.classList) el.classList.toggle("bad", !!m);
+      }
+      return !m;
+    };
+    // Show the ZIP result: in our area, in Virginia but outside our usual
+    // area, or outside Virginia (which blocks sending).
+    var cityAuto = "";
+    var zipLookup = function () {
+      var z = $("zip").value.trim().slice(0, 5), city = $("city"), state = $("state");
+      zipNote.hidden = true; zipNote.className = "zip-note";
+      if (!/^\d{5}$/.test(z)) return;
+      var town = ZIPS[z];
+      if (town) {
+        if (!city.value.trim() || city.value === cityAuto) { city.value = town; cityAuto = town; check("city"); }
+        state.value = "VA"; check("state");
+        zipNote.className = "zip-note ok";
+        zipNote.textContent = T("Good news: " + town + ", VA is in our service area.", "Buenas noticias: " + town + ", VA está en nuestra área de servicio.");
+      } else if (isVaZip(z)) {
+        state.value = "VA"; check("state");
+        zipNote.className = "zip-note warn";
+        zipNote.textContent = T("This ZIP code may be outside our usual service area. Send your request anyway and we will let you know if we can help.", "Este código postal puede estar fuera de nuestra área habitual. Envíe su solicitud de todos modos y le diremos si podemos ayudarle.");
+      } else {
+        zipNote.className = "zip-note out";
+        zipNote.textContent = T("Sorry, this address is not in our service area. We serve the northern Shenandoah Valley and nearby counties in Virginia.", "Lo sentimos, esta dirección no está en nuestra área de servicio. Atendemos el norte del valle de Shenandoah y condados cercanos en Virginia.");
+      }
+      zipNote.hidden = false;
+    };
+    Object.keys(checks).forEach(function (id) {
+      if (id === "contact") return;
+      var el = $(id);
+      el.addEventListener("blur", function () {
+        if (id === "phone") { var d = phoneDigits(el.value); if (d.length === 10) el.value = "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6); }
+        if (id === "state") el.value = el.value.trim().toUpperCase();
+        if (el.value.trim() || el.classList.contains("bad")) check(id, true);
+      });
+      el.addEventListener(id === "service" ? "change" : "input", function () {
+        if (id === "zip") zipLookup();
+        if (id === "city") cityAuto = "";
+        check(id, el.classList.contains("bad"));
+      });
+    });
     var syncEmailRequired = function () {
-      var picked = form.querySelector('input[name="contact"]:checked');
-      var needEmail = !!picked && picked.value === "Email";
+      var needEmail = picked().indexOf("Email") > -1;
       emailInput.required = needEmail;
       if (emailReq) emailReq.hidden = !needEmail;
-      if (!needEmail) emailInput.setCustomValidity("");
+      check("contact", true);
+      if (!needEmail || emailInput.classList.contains("bad")) check("email", emailInput.classList.contains("bad"));
     };
     Array.prototype.forEach.call(form.querySelectorAll('input[name="contact"]'), function (r) {
       r.addEventListener("change", syncEmailRequired);
     });
     syncEmailRequired();
+    if ($("zip").value) zipLookup();
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var first = null;
+      Object.keys(checks).forEach(function (id) {
+        if (!check(id, true) && !first) first = id === "contact" ? form.querySelector('input[name="contact"]') : $(id);
+      });
+      if (first) {
+        first.focus();
+        msg.className = "form-msg err show";
+        msg.textContent = T("Please fix the highlighted fields, then send again.", "Corrija los campos marcados y vuelva a enviar.");
+        return;
+      }
+      msg.className = "form-msg";
       var d = new FormData(form);
       var v = function (k) { return (d.get(k) || "").toString().trim(); };
       var lines = [
-        "Name: " + v("name"),
+        "Name: " + v("fname") + " " + v("lname"),
         "Phone: " + v("phone"),
         v("email") ? "Email: " + v("email") : "",
         "Service address:",
@@ -179,7 +283,7 @@
         v("address2") ? "  " + v("address2") : "",
         "  " + v("city") + ", " + v("state").toUpperCase() + " " + v("zip"),
         "Service: " + v("service"),
-        "Best way to reach me: " + v("contact"),
+        "Preferred contact: " + picked().join(", "),
         "",
         v("message"),
         ES ? "" : null,

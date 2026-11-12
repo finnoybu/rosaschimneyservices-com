@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rosaschimneyservices.com/sitemap.xml
+Sitemap: https://www.rosaschimneyservices.com/sitemap.xml

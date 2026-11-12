@@ -1,5 +1,8 @@
 # Spanish translations: navigation, interface, home, services, about, contact.
 ES1 = {
+"First name": "Nombre",
+"Last name": "Apellido",
+"Preferred method(s) of contact": "Método(s) de contacto preferido(s)",
 "Service Areas": "Áreas de servicio",
 "Home": "Inicio",
 "Request an Estimate": "Solicite un presupuesto",

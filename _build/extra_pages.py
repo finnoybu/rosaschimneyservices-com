@@ -181,3 +181,4 @@ for _s in ("Hablamos español", "Hablamos español.", "Llame y pregunte por Mark
     EXTRA_ES[_s] = _s
 
 EXTRA_ES["Verify on the CSIA website"] = "Verificar en el sitio web de la CSIA"
+EXTRA_ES["Rosas Chimney Services logo over a brick chimney at dusk. CSIA Certified Chimney Sweep #11978, (540) 431-9629."] = "Logotipo de Rosas Chimney Services sobre una chimenea de ladrillo al atardecer. Deshollinador certificado por la CSIA n.º 11978, (540) 431-9629."

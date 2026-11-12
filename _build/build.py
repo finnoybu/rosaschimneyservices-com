@@ -11,7 +11,7 @@ from areas import COUNTIES, TOWNS
 from extra_pages import rentals, self_check, PROMO, EXTRA_ES
 CBY = {c["slug"]: c for c in COUNTIES}
 
-SITE = "https://rosaschimneyservices.com"
+SITE = "https://www.rosaschimneyservices.com"  # live site answers on www; the bare domain should redirect here
 NAME = "Rosas Chimney Services"
 PHONE_DISPLAY = "(540) 431-9629"
 PHONE = "+15404319629"
@@ -35,8 +35,7 @@ FOOT_BRAND = ('<a class="foot-shield" href="index.html" aria-label="%s home">'
               '<img src="assets/img/logo-shield.svg?v=%s" alt="Rosas Chimney Services" width="120" height="160" loading="lazy"></a>') % (NAME, _ver("assets/img/logo-shield.svg"))
 
 def head(title, desc, path, extra=""):
-    clean = path[:-len("index.html")] if path.endswith("index.html") else path
-    canon = SITE + "/" + clean
+    canon = clean_url(path)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,8 +52,12 @@ def head(title, desc, path, extra=""):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canon}">
-<meta property="og:image" content="{SITE}/assets/img/og-image.png">
+<meta property="og:image" content="{SITE}/assets/img/og-image.png?v={_ver("assets/img/og-image.png")}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Rosas Chimney Services logo over a brick chimney at dusk. CSIA Certified Chimney Sweep #11978, (540) 431-9629.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{SITE}/assets/img/og-image.png?v={_ver("assets/img/og-image.png")}">
 <link rel="icon" href="favicon.ico?v={_ver("favicon.ico")}" sizes="any">
 <link rel="icon" href="assets/img/favicon.svg?v={_ver("assets/img/favicon.svg")}" type="image/svg+xml">
 <link rel="icon" href="assets/img/favicon-32.png?v={_ver("assets/img/favicon-32.png")}" type="image/png" sizes="32x32">
@@ -74,7 +77,7 @@ def header(path):
         return h == path or (h.startswith("service-areas/") and path.startswith("service-areas/"))
     links = "".join(f'<a href="{h}"{cur if is_cur(h) else ""}>{t}</a>' for h, t in NAV)
     return f"""<div class="utility"><div class="wrap">
-  <div class="u-left"><span class="u-status"><i class="ic-clock">{I['clock']}</i><i class="ic-em">{I['phone']}</i><span data-open-status>Mon to Sat, 7 AM to 7 PM</span></span><a class="u-csia" {CSIA_A}>{I['award']}CSIA Certified Sweep #{CSIA}</a></div>
+  <div class="u-left"><span>{I['clock']}<span data-open-status>Mon to Sat, 7 AM to 7 PM</span></span><a class="u-csia" {CSIA_A}>{I['award']}CSIA Certified Sweep #{CSIA}</a></div>
   <div class="u-right"><span class="u-habla" lang="es">Hablamos español</span><!--LANG--><a class="u-email" href="mailto:{EMAIL}">{EMAIL}</a></div>
 </div></div>
 <header class="site-header"><div class="wrap">
@@ -422,6 +425,8 @@ def area():
                 "Rosas Chimney Services serves Warren County, Front Royal, Luray, Page County and surrounding Shenandoah Valley communities. Call or text (540) 431-9629.",
                 "service-area.html") + header("service-area.html") + body + footer()
 
+SERVICE_ZIPS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "service_zips.json"), encoding="utf-8").read().strip()
+
 def contact():
     opts = ["Chimney cleaning and sweep", "Chimney inspection", "Chimney repair", "Chimney liner replacement", "Chimney cap or weatherproofing", "Wood or pellet stove installation", "Class A chimney installation", "Something else"]
     # values that services.html links pass in via ?service=
@@ -451,26 +456,26 @@ def contact():
     <p>Fields marked <span style="color:var(--brick)">*</span> are required.</p>
     <form id="estimate-form" novalidate>
       <div class="form-row">
-        <div class="field"><label for="name">Name <span class="req">*</span></label><input id="name" name="name" autocomplete="name" required></div>
-        <div class="field"><label for="phone">Phone <span class="req">*</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+        <div class="field"><label for="fname">First name <span class="req">*</span></label><input id="fname" name="fname" autocomplete="given-name" maxlength="40" required><small class="field-err" id="fname-err"></small></div>
+        <div class="field"><label for="lname">Last name <span class="req">*</span></label><input id="lname" name="lname" autocomplete="family-name" maxlength="40" required><small class="field-err" id="lname-err"></small></div>
       </div>
-      <div class="form-row">
-        <div class="field"><label for="email">Email <span class="req" id="email-req" hidden>*</span></label><input id="email" name="email" type="email" autocomplete="email"></div>
-      </div>
+      <div class="field"><label for="email">Email <span class="req" id="email-req" hidden>*</span></label><input id="email" name="email" type="email" autocomplete="email" maxlength="100"><small class="field-err" id="email-err"></small></div>
+      <div class="field"><label for="phone">Phone <span class="req">*</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="(540) 555-1234" required><small class="field-err" id="phone-err"></small></div>
       <fieldset class="addr">
         <legend>Service address <span class="req">*</span></legend>
-        <div class="field"><label for="address1">Street address <span class="req">*</span></label><input id="address1" name="address1" autocomplete="address-line1" required></div>
-        <div class="field"><label for="address2">Apt, suite, unit, etc. <span class="opt">(optional)</span></label><input id="address2" name="address2" autocomplete="address-line2"></div>
+        <div class="field"><label for="address1">Street address <span class="req">*</span></label><input id="address1" name="address1" autocomplete="address-line1" maxlength="100" required><small class="field-err" id="address1-err"></small></div>
+        <div class="field"><label for="address2">Apt, suite, unit, etc. <span class="opt">(optional)</span></label><input id="address2" name="address2" autocomplete="address-line2" maxlength="60"></div>
         <div class="form-row-3">
-          <div class="field"><label for="city">City or town <span class="req">*</span></label><input id="city" name="city" autocomplete="address-level2" required></div>
-          <div class="field"><label for="state">State <span class="req">*</span></label><input id="state" name="state" autocomplete="address-level1" value="VA" maxlength="2" pattern="[A-Za-z]{{2}}" title="Two-letter state, e.g. VA" required></div>
-          <div class="field"><label for="zip">ZIP code <span class="req">*</span></label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric" maxlength="10" pattern="[0-9]{{5}}(-[0-9]{{4}})?" title="5-digit ZIP code, e.g. 22630" required></div>
+          <div class="field"><label for="city">City or town <span class="req">*</span></label><input id="city" name="city" autocomplete="address-level2" maxlength="50" required><small class="field-err" id="city-err"></small></div>
+          <div class="field"><label for="state">State <span class="req">*</span></label><input id="state" name="state" autocomplete="address-level1" value="VA" maxlength="2" required><small class="field-err" id="state-err"></small></div>
+          <div class="field"><label for="zip">ZIP code <span class="req">*</span></label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric" maxlength="10" required><small class="field-err" id="zip-err"></small></div>
         </div>
+        <div id="zip-note" class="zip-note" role="status" aria-live="polite" hidden></div>
       </fieldset>
-      <div class="field"><label for="service">Service needed <span class="req">*</span></label><select id="service" name="service" required>{options}</select></div>
-      <div class="field"><label for="message">Details</label><textarea id="message" name="message" placeholder="Fireplace, wood stove or pellet stove? Anything you have noticed, like smoke, odors or leaks?"></textarea></div>
-      <div class="field"><span style="font-size:13.5px;font-weight:600;color:var(--smoke)">Best way to reach you</span>
-        <div class="radio-row"><label><input type="radio" name="contact" value="Call" checked> Call</label><label><input type="radio" name="contact" value="Text"> Text</label><label><input type="radio" name="contact" value="Email"> Email</label></div></div>
+      <div class="field"><label for="service">Service needed <span class="req">*</span></label><select id="service" name="service" required>{options}</select><small class="field-err" id="service-err"></small></div>
+      <div class="field"><label for="message">Details</label><textarea id="message" name="message" maxlength="2000" placeholder="Fireplace, wood stove or pellet stove? Anything you have noticed, like smoke, odors or leaks?"></textarea></div>
+      <div class="field" role="group" aria-labelledby="contact-lbl"><span id="contact-lbl" class="group-lbl">Preferred method(s) of contact <span class="req">*</span></span>
+        <div class="radio-row"><label><input type="checkbox" name="contact" value="Call" checked> Call</label><label><input type="checkbox" name="contact" value="Text"> Text</label><label><input type="checkbox" name="contact" value="Email"> Email</label></div><small class="field-err" id="contact-err"></small></div>
       <div class="form-foot">
         <small>Sending opens your email app with your request filled in.</small>
         <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-ghost mobile-only" type="submit" value="sms">{I['sms']}Send by Text</button><button class="btn btn-primary" type="submit" value="email">{I['mail']}Send by Email</button></div>
@@ -479,7 +484,7 @@ def contact():
     </form>
   </div>
 </div></section>
-<script>window.SERVICE_ALIAS={json.dumps(alias)};</script>
+<script>window.SERVICE_ALIAS={json.dumps(alias)};window.SERVICE_ZIPS={SERVICE_ZIPS};</script>
 """
     return head("Contact &amp; Estimates | Rosas Chimney Services | (540) 431-9629",
                 "Call or text (540) 431-9629 for chimney service estimates and pricing in Warren County, Front Royal and Luray, VA. Open Monday to Saturday, 7 AM to 7 PM.",
@@ -531,7 +536,14 @@ def relink(html, depth):
     return re.sub(r'(href|src)="(?!https?:|tel:|sms:|mailto:|#|data:|/)([^"]*)"', lambda m: f'{m.group(1)}="{pre}{m.group(2)}"', html)
 
 def clean_url(path):
-    return SITE + "/" + (path[:-len("index.html")] if path.endswith("index.html") else path)
+    """Public address of a page: folder pages end in "/", other pages drop ".html".
+    Cloudflare Pages redirects /page.html to /page, and GitLab Pages serves page.html
+    for /page, so these are the addresses that load without a redirect on either host."""
+    if path.endswith("index.html"):
+        path = path[:-len("index.html")]
+    elif path.endswith(".html"):
+        path = path[:-len(".html")]
+    return SITE + "/" + path
 
 def breadcrumb(items):
     """items: [(name, path or None)] -> (html, json-ld)"""
@@ -694,7 +706,7 @@ def write_sitemap(pages):
         if p == "404.html":
             continue
         for u in (clean_url(p), clean_url("es/" + p)):
-            x += f'  <url><loc>{u}</loc><lastmod>2026-11-07</lastmod><priority>{pri(p)}</priority></url>\n'
+            x += f'  <url><loc>{u}</loc><lastmod>2026-11-11</lastmod><priority>{pri(p)}</priority></url>\n'
     open(os.path.join(OUT, "sitemap.xml"), "w").write(x + "</urlset>\n")
     open(os.path.join(OUT, "assets/img/area-map.svg"), "w").write(
         county_map(None, link=False).replace('<svg class="cmap"', '<svg xmlns="http://www.w3.org/2000/svg"'))
@@ -707,7 +719,7 @@ _B = dict(I=I, PHONE=PHONE, PHONE_DISPLAY=PHONE_DISPLAY, BOOK=BOOK, TOWN_BY=TOWN
 pages["vacation-rentals.html"] = rentals(_B)
 pages["chimney-check.html"] = self_check(_B)
 
-# Spanish mirror under /es/ (404 stays English-only; GitHub Pages serves one 404)
+# Spanish mirror under /es/ (404 stays English-only; hosts serve a single root 404.html)
 from es_i18n import to_spanish, MISSES, DICT
 DICT.update(EXTRA_ES)
 def lang_toggle(path, lang):
@@ -739,7 +751,17 @@ for name, html in list(pages.items()):
     es_pages["es/" + name] = es_html
 if MISSES:
     print("UNTRANSLATED:", sorted(MISSES))
+def root_absolute(html):
+    """404.html can be served at any missing address (e.g. /es/old/page), so its links
+    must start at the site root. Note for the site designer: on the github.io demo the
+    site lives in a sub-folder, so the demo's 404 page shows unstyled. The live site is fine."""
+    return re.sub(r'(href|src)="(?!https?:|tel:|sms:|mailto:|#|data:|/)([^"]*)"', lambda m: f'{m.group(1)}="/{m.group(2)}"', html)
+
 for name, html in pages.items():
+    if name == "404.html":
+        html = root_absolute(html)
+        html = re.sub(r'<link rel="canonical"[^>]*>\n', '<meta name="robots" content="noindex">\n', html)
+        html = re.sub(r'<meta property="og:url"[^>]*>\n', '', html)
     depth = name.count("/")
     full = os.path.join(OUT, name)
     os.makedirs(os.path.dirname(full), exist_ok=True)

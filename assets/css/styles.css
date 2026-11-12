@@ -355,6 +355,15 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
 .radio-row input { accent-color: var(--brick); width: 17px; height: 17px; }
 .form-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
 .form-foot small { color: var(--mist); font-size: 13px; max-width: 300px; }
+.field-err { color: var(--brick); font-size: 13px; font-weight: 600; line-height: 1.35; }
+.field-err:empty { display: none; }
+.field input.bad, .field select.bad { border-color: var(--brick); background: #fdf6f4; }
+.group-lbl { font-size: 13.5px; font-weight: 600; color: var(--smoke); }
+.group-lbl .req { color: var(--brick); }
+.zip-note { margin: -4px 0 16px; padding: 11px 14px; border-radius: var(--radius); font-size: 14.5px; font-weight: 500; line-height: 1.45; border-left: 4px solid; }
+.zip-note.ok { background: #eef6ee; color: #23532a; border-color: #3f8a4a; }
+.zip-note.warn { background: #fdf4e3; color: #6e4f0e; border-color: #c99a2e; }
+.zip-note.out { background: #fbecea; color: var(--brick-dark); border-color: var(--brick); }
 .form-msg { display: none; margin-top: 18px; padding: 14px 16px; border-radius: var(--radius); background: #eef6ee; color: #23532a; font-size: 14.5px; }
 .form-msg.show { display: block; }
 .form-msg.err { background: #fbecea; color: var(--brick-dark); }
@@ -674,21 +683,7 @@ html[lang="es"] .utility .u-habla { display: none; }
 .c-card .c-habla { display: block; font-style: normal; font-size: 12.5px; font-weight: 600; color: var(--brick); margin-top: 2px; }
 @media (max-width: 640px) { .utility .u-habla { display: none; } }
 
-/* ---------- Top bar: after-hours emergency line ---------- */
-.utility .u-status i { display: inline-flex; font-style: normal; }
-.utility .u-status .ic-em { display: none; }
-.utility .u-status.is-emergency .ic-clock { display: none; }
-.utility .u-status.is-emergency .ic-em { display: inline-flex; }
-.utility .u-status.is-emergency { color: #ffb08a; font-weight: 600; }
-.utility .u-status.is-emergency svg { color: #ff6b45; animation: em-pulse 2.4s ease-in-out infinite; }
-@keyframes em-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
-@media (prefers-reduced-motion: reduce) { .utility .u-status.is-emergency svg { animation: none; } }
-.utility .u-status, .utility .u-status [data-open-status] { white-space: nowrap; }
-@media (max-width: 480px) {
-  .utility .u-status [data-open-status][data-short] { font-size: 0; }
-  .utility .u-status [data-open-status][data-short]::after { content: attr(data-short); font-size: 13px; }
-}
-/* keep the top bar on one line once the emergency line shows */
+/* keep the top bar on one line on narrower screens */
 @media (max-width: 1000px) { .utility .u-left > :nth-child(2) { display: none; } }
 @media (max-width: 860px) { .utility .u-right .u-email { display: none; } }
 
@@ -702,3 +697,10 @@ a.cred.csia-link:hover, a.badge-float.csia-link:hover { box-shadow: var(--shadow
 .foot-shield { display: inline-block; }
 .foot-shield img { width: 120px; height: auto; display: block; }
 @media (max-width: 720px) { .foot-shield img { width: 104px; } }
+
+/* small phones: shorter open/closed wording (set by main.js) keeps the top bar on one line */
+.utility [data-open-status] { white-space: nowrap; }
+@media (max-width: 480px) {
+  .utility [data-open-status][data-short] { font-size: 0; }
+  .utility [data-open-status][data-short]::after { content: attr(data-short); font-size: 13px; }
+}
