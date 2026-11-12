@@ -343,7 +343,8 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
 .addr { border: 0; padding: 0; margin: 4px 0 0; min-width: 0; }
 .addr legend { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--soot); margin-bottom: 12px; padding: 0; }
 .addr legend .req { color: var(--brick); }
-.form-row-3 { display: grid; grid-template-columns: 2fr .8fr 1.2fr; gap: 16px; }
+.form-row-3 { display: grid; grid-template-columns: 1.1fr 2fr .7fr; gap: 16px; }
+.field input.locked, .field input[readonly] { background: var(--cream, #f3ede4); color: var(--charcoal); border-style: dashed; cursor: default; box-shadow: none; }
 .field input, .field select, .field textarea {
   font: inherit; font-size: 15.5px; padding: 12px 14px; border: 1px solid rgba(23,19,17,.22); border-radius: var(--radius);
   background: var(--paper); color: var(--soot); transition: border-color .2s ease, box-shadow .2s ease;
@@ -489,7 +490,7 @@ a.c-card:hover { border-color: var(--brick); box-shadow: var(--shadow-sm); }
   .trust-item:last-child { border-bottom: 0; }
   .services-grid, .steps, .values, .reviews, .levels, .form-row { grid-template-columns: 1fr; }
   .form-row-3 { grid-template-columns: 1fr 1fr; gap: 0 14px; }
-  .form-row-3 .field:first-child { grid-column: 1 / -1; }
+  .form-row-3 .f-city { grid-column: 1 / -1; order: 3; }
   .season { grid-template-columns: 1fr; text-align: left; padding: 26px; }
   .cta-band .wrap { flex-direction: column; align-items: flex-start; }
   .form-card { padding: 28px 22px; }

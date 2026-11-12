@@ -466,9 +466,9 @@ def contact():
         <div class="field"><label for="address1">Street address <span class="req">*</span></label><input id="address1" name="address1" autocomplete="address-line1" maxlength="100" required><small class="field-err" id="address1-err"></small></div>
         <div class="field"><label for="address2">Apt, suite, unit, etc. <span class="opt">(optional)</span></label><input id="address2" name="address2" autocomplete="address-line2" maxlength="60"></div>
         <div class="form-row-3">
-          <div class="field"><label for="city">City or town <span class="req">*</span></label><input id="city" name="city" autocomplete="address-level2" maxlength="50" required><small class="field-err" id="city-err"></small></div>
-          <div class="field"><label for="state">State <span class="req">*</span></label><input id="state" name="state" autocomplete="address-level1" value="VA" maxlength="2" required><small class="field-err" id="state-err"></small></div>
-          <div class="field"><label for="zip">ZIP code <span class="req">*</span></label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric" maxlength="10" required><small class="field-err" id="zip-err"></small></div>
+          <div class="field f-zip"><label for="zip">ZIP code <span class="req">*</span></label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric" maxlength="10" required><small class="field-err" id="zip-err"></small></div>
+          <div class="field f-city"><label for="city">City or town <span class="req">*</span></label><input id="city" name="city" autocomplete="address-level2" maxlength="50" placeholder="Fills in from ZIP" required><small class="field-err" id="city-err"></small></div>
+          <div class="field f-state"><label for="state">State</label><input id="state" name="state" value="VA" readonly tabindex="-1" class="locked"></div>
         </div>
         <div id="zip-note" class="zip-note" role="status" aria-live="polite" hidden></div>
       </fieldset>

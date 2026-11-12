@@ -155,7 +155,6 @@
     var emailInput = $("email"), emailReq = $("email-req");
     var zipNote = $("zip-note");
     var ZIPS = window.SERVICE_ZIPS || {};
-    var STATES = "AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split(" ");
     var NAME_RX = /^[\p{L}\p{M}][\p{L}\p{M}'’. -]*$/u;
     var EMAIL_RX = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
     var phoneDigits = function (s) {
@@ -185,11 +184,6 @@
       },
       address1: function (v) { return !v ? REQ : /[A-Za-z]/.test(v) && /\d/.test(v) ? "" : T("Please enter a street address with a house number, like 123 Main St.", "Escriba una dirección con número, como 123 Main St."); },
       city: function (v) { return !v ? REQ : NAME_RX.test(v) ? "" : T("Please check the city or town name.", "Revise el nombre de la ciudad o pueblo."); },
-      state: function (v) {
-        if (!v) return REQ;
-        if (STATES.indexOf(v.toUpperCase()) < 0) return T("Use the two-letter state, like VA.", "Use las dos letras del estado, como VA.");
-        return v.toUpperCase() === "VA" ? "" : T("We only serve Virginia.", "Solo damos servicio en Virginia.");
-      },
       zip: function (v) {
         if (!v) return REQ;
         if (!/^\d{5}(-\d{4})?$/.test(v)) return T("Enter a 5-digit ZIP code, like 22630.", "Escriba un código postal de 5 dígitos, como 22630.");
@@ -211,21 +205,24 @@
     };
     // Show the ZIP result: in our area, in Virginia but outside our usual
     // area, or outside Virginia (which blocks sending).
-    var cityAuto = "";
+    // A ZIP we know fills in the city and locks it, so the two can't
+    // disagree. Any other Virginia ZIP leaves the city open to type.
     var zipLookup = function () {
-      var z = $("zip").value.trim().slice(0, 5), city = $("city"), state = $("state");
+      var z = $("zip").value.trim().slice(0, 5), city = $("city");
+      var town = /^\d{5}$/.test(z) ? ZIPS[z] : "";
       zipNote.hidden = true; zipNote.className = "zip-note";
-      if (!/^\d{5}$/.test(z)) return;
-      var town = ZIPS[z];
       if (town) {
-        if (!city.value.trim() || city.value === cityAuto) { city.value = town; cityAuto = town; check("city"); }
-        state.value = "VA"; check("state");
+        city.value = town; city.readOnly = true; city.tabIndex = -1; check("city");
+      } else if (city.readOnly) {
+        city.value = ""; city.readOnly = false; city.removeAttribute("tabindex");
+      }
+      if (!/^\d{5}$/.test(z)) return;
+      if (town) {
         zipNote.className = "zip-note ok";
-        zipNote.textContent = T("Good news: " + town + ", VA is in our service area.", "Buenas noticias: " + town + ", VA está en nuestra área de servicio.");
+        zipNote.textContent = T("Good news: " + town + ", VA " + z + " is in our service area.", "Buenas noticias: " + town + ", VA " + z + " está en nuestra área de servicio.");
       } else if (isVaZip(z)) {
-        state.value = "VA"; check("state");
         zipNote.className = "zip-note warn";
-        zipNote.textContent = T("This ZIP code may be outside our usual service area. Send your request anyway and we will let you know if we can help.", "Este código postal puede estar fuera de nuestra área habitual. Envíe su solicitud de todos modos y le diremos si podemos ayudarle.");
+        zipNote.textContent = T("This ZIP code may be outside our usual service area. Please type your city or town, then send your request and we will let you know if we can help.", "Este código postal puede estar fuera de nuestra área habitual. Escriba su ciudad o pueblo y envíe su solicitud; le diremos si podemos ayudarle.");
       } else {
         zipNote.className = "zip-note out";
         zipNote.textContent = T("Sorry, this address is not in our service area. We serve the northern Shenandoah Valley and nearby counties in Virginia.", "Lo sentimos, esta dirección no está en nuestra área de servicio. Atendemos el norte del valle de Shenandoah y condados cercanos en Virginia.");
@@ -237,12 +234,10 @@
       var el = $(id);
       el.addEventListener("blur", function () {
         if (id === "phone") { var d = phoneDigits(el.value); if (d.length === 10) el.value = "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6); }
-        if (id === "state") el.value = el.value.trim().toUpperCase();
         if (el.value.trim() || el.classList.contains("bad")) check(id, true);
       });
       el.addEventListener(id === "service" ? "change" : "input", function () {
         if (id === "zip") zipLookup();
-        if (id === "city") cityAuto = "";
         check(id, el.classList.contains("bad"));
       });
     });
@@ -281,7 +276,7 @@
         "Service address:",
         "  " + v("address1"),
         v("address2") ? "  " + v("address2") : "",
-        "  " + v("city") + ", " + v("state").toUpperCase() + " " + v("zip"),
+        "  " + v("city") + ", VA " + v("zip"),
         "Service: " + v("service"),
         "Preferred contact: " + picked().join(", "),
         "",
@@ -293,7 +288,7 @@
       lines.forEach(function (l, i) { if (l !== "" || (i > 0 && lines[i - 1] !== "" && i < lines.length - 1)) keep.push(l); });
       lines = keep;
       var body = lines.join("\n");
-      var subject = "Estimate request: " + v("service") + " (" + v("city") + ", " + v("state").toUpperCase() + ")";
+      var subject = "Estimate request: " + v("service") + " (" + v("city") + ", VA)";
       var href;
       if (e.submitter && e.submitter.value === "sms") {
         var sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? "&" : "?";

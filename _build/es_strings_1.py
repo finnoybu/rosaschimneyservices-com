@@ -1,5 +1,6 @@
 # Spanish translations: navigation, interface, home, services, about, contact.
 ES1 = {
+"Fills in from ZIP": "Se completa con el código postal",
 "First name": "Nombre",
 "Last name": "Apellido",
 "Preferred method(s) of contact": "Método(s) de contacto preferido(s)",
